@@ -1,0 +1,46 @@
+<resources>
+    <string name="app_name">Калибровка весоизмерительных систем</string>
+
+    <string name="title_calibrations">Список калибровок</string>
+    <string name="title_scales">Весовые пункты</string>
+    <string name="title_prefs">Настройки</string>
+    <string name="title_about">О программе</string>
+
+    <string name="dialog_title_add">Новая запись</string>
+    <string name="dialog_title_update">Изменение записи</string>
+
+    <string name="about_version">Версия</string>
+    <string name="about_copyright" translatable="false">© П3тр0виЧъ</string>
+    <string name="about_disclaimer">
+        Приложение предоставляется на основе принципов «КАК ЕСТЬ» без каких-либо гарантий,
+        то есть вы используете его на собственный риск и соглашаетесь с тем, что разработчик данного приложения
+        не несёт никакой ответственности перед вами за какой-либо ущерб, включая потерю данных.
+    </string>
+
+    <string name="action_calibrations">Список калибровок</string>
+    <string name="action_scales">Весовые пункты</string>
+    <string name="action_settings">Настройки</string>
+    <string name="action_about">О программе</string>
+
+    <string name="action_save">Сохранить</string>
+
+    <string name="text_name">Название</string>
+    <string name="text_id">Номер</string>
+    <string name="text_type">Тип</string>
+    <string name="text_class_static">Статика</string>
+    <string name="text_class_dynamic">Динамика</string>
+
+    <string name="text_no_data">Нет записей</string>
+
+    <string name="message_error_need_id">Необходимо указать номер весов</string>
+    <string name="message_error_bad_id">Номер весов должен быть больше нуля</string>
+
+    <string name="message_error_insert_record">Во время добавления записи произошла ошибка</string>
+    <string name="message_error_update_record">Во время обновления записи произошла ошибка</string>
+    <string name="message_error_delete_record">Во время удаления записи произошла ошибка</string>
+
+    <string name="sync_authority" translatable="false">ru.p3tr0vich.calibration.provider</string>
+
+    <string name="exception_fragment_no_id" translatable="false">Fragment must have ID</string>
+    <string name="exception_fragment_bad_id" translatable="false">Fragment bad ID</string>
+</resources>

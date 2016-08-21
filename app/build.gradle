@@ -1,0 +1,94 @@
+apply plugin: 'com.android.application'
+
+Properties props = new Properties()
+props.load(new FileInputStream(file("c:\\Android\\Keystore\\ru.p3tr0vich.calibration.properties")))
+
+//noinspection GroovyMissingReturnStatement
+android {
+    compileSdkVersion rootProject.ext.compileSdkVersion
+    buildToolsVersion rootProject.ext.buildToolsVersion
+
+    //noinspection GroovyMissingReturnStatement
+    defaultConfig {
+        applicationId "ru.p3tr0vich.calibration"
+
+        minSdkVersion rootProject.ext.minSdkVersion
+        targetSdkVersion rootProject.ext.targetSdkVersion
+
+        versionCode 1
+        versionName "1.0"
+
+        buildConfigField "long", "BUILD_DATE", System.currentTimeMillis() + "l"
+    }
+
+    signingConfigs {
+        debug {
+            keyAlias 'ru.p3tr0vich.calibration'
+            keyPassword props['keyPassword']
+            storeFile file(props['storeFile'])
+            storePassword props['storePassword']
+        }
+        release {
+            keyAlias 'ru.p3tr0vich.calibration'
+            keyPassword props['keyPassword']
+            storeFile file(props['storeFile'])
+            storePassword props['storePassword']
+        }
+    }
+
+    buildTypes {
+        debug {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.debug
+
+            ext.enableCrashlytics = false
+        }
+        release {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+
+            signingConfig signingConfigs.release
+
+            applicationVariants.all { variant ->
+                appendVersionName(variant, defaultConfig)
+            }
+
+            ext.enableCrashlytics = false
+        }
+    }
+    
+    dataBinding {
+        enabled = true
+    }
+}
+
+def appendVersionName(variant, defaultConfig) {
+    variant.outputs.each { output ->
+        if (output.zipAlign) {
+            def file = output.outputFile
+            def fileName = file.name.replace("app-release.apk", defaultConfig.applicationId + "-" +
+                    defaultConfig.versionName + "-release.apk")
+            output.outputFile = new File(file.parent, fileName)
+        }
+
+        def file = output.packageApplication.outputFile
+        def fileName = file.name.replace("app-release.apk", defaultConfig.applicationId + "-" +
+                defaultConfig.versionName + "-release.apk")
+        output.packageApplication.outputFile = new File(file.parent, fileName)
+    }
+}
+
+dependencies {
+    compile rootProject.ext.supportAppCompat
+    compile rootProject.ext.supportDesign
+    compile rootProject.ext.supportPreferenceV7
+    compile rootProject.ext.supportPreferenceV14
+    compile rootProject.ext.supportCardView
+    compile rootProject.ext.supportRecyclerView
+
+    compile 'com.pnikosis:materialish-progress:1.7'
+
+    compile project(':libs:materialdatetimepicker')
+}

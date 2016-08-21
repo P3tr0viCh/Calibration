@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/menu_top"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/action_calibrations"
+            android:icon="@drawable/ic_scale_balance"
+            android:title="@string/action_calibrations" />
+        <item
+            android:id="@+id/action_scales"
+            android:icon="@drawable/ic_weight_kilogram"
+            android:title="@string/action_scales" />
+    </group>
+
+    <group
+        android:id="@+id/menu_bottom"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/action_preferences"
+            android:icon="@drawable/ic_settings"
+            android:title="@string/action_settings" />
+        <item
+            android:id="@+id/action_about"
+            android:icon="@drawable/ic_information"
+            android:title="@string/action_about" />
+    </group>
+</menu>

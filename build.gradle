@@ -1,0 +1,34 @@
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.android.tools.build:gradle:2.2.0-beta2'
+    }
+}
+
+ext {
+    compileSdkVersion = 24
+    buildToolsVersion = '24.0.1'
+    minSdkVersion = 17
+    targetSdkVersion = 23
+
+    supportVersion = '24.2.0'
+
+    supportDesign = 'com.android.support:design:' + supportVersion
+    supportAppCompat = 'com.android.support:appcompat-v7:' + supportVersion
+    supportPreferenceV7 = 'com.android.support:preference-v7:' + supportVersion
+    supportPreferenceV14 = 'com.android.support:preference-v14:' + supportVersion
+    supportCardView = 'com.android.support:cardview-v7:' + supportVersion
+    supportRecyclerView = 'com.android.support:recyclerview-v7:' + supportVersion
+}
+
+allprojects {
+    repositories {
+        jcenter()
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}

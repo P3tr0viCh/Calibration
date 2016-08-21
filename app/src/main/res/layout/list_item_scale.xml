@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <import type="ru.p3tr0vich.calibration.utils.UtilsFormat" />
+
+        <variable
+            name="scaleRecord"
+            type="ru.p3tr0vich.calibration.models.ScaleRecord" />
+    </data>
+
+    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:clickable="false"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
+
+        <TextView
+            android:id="@+id/text_name"
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentTop="true"
+            android:layout_toStartOf="@+id/btn_menu"
+            android:clickable="false"
+            android:gravity="bottom"
+            android:text="@{scaleRecord.getName}"
+            android:textAppearance="@style/AppTheme.TextAppearance.List"
+            tools:text="@string/text_name" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="34dp"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="16dp"
+            android:layout_toStartOf="@+id/btn_menu"
+            android:gravity="top"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_id"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="@{String.valueOf(scaleRecord.getId)}"
+                android:textAppearance="@style/AppTheme.TextAppearance.List"
+                tools:text="@string/text_id" />
+
+            <TextView
+                android:id="@+id/text_type"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="@{scaleRecord.getType}"
+                android:textAppearance="@style/AppTheme.TextAppearance.List"
+                tools:text="@string/text_type" />
+
+            <TextView
+                android:id="@+id/text_class_static"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="@{String.valueOf(scaleRecord.getClassStatic)}"
+                android:textAppearance="@style/AppTheme.TextAppearance.List"
+                tools:text="@string/text_class_static" />
+
+            <TextView
+                android:id="@+id/text_class_dynamic"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                android:gravity="top"
+                android:text="@{String.valueOf(scaleRecord.getClassDynamic)}"
+                android:textAppearance="@style/AppTheme.TextAppearance.List"
+                tools:text="@string/text_class_dynamic" />
+        </LinearLayout>
+
+        <ImageButton
+            android:id="@+id/btn_menu"
+            android:layout_width="48dp"
+            android:layout_height="47dp"
+            android:layout_alignParentStart="false"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentTop="false"
+            android:layout_centerVertical="true"
+            android:adjustViewBounds="false"
+            android:background="?attr/selectableItemBackground"
+            android:clickable="true"
+            android:src="@drawable/ic_dots_vertical"
+            tools:ignore="ContentDescription" />
+    </RelativeLayout>
+</layout>
