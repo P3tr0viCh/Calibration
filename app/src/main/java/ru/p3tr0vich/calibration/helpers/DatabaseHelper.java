@@ -24,35 +24,36 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     private static final boolean LOG_ENABLED = false;
 
-    interface TableScalesColumns {
-        String SCALE_NAME = "name";
-        String TYPE = "type";
-        String CLASS_STATIC = "class_static";
-        String CLASS_DYNAMIC = "class_dynamic";
-    }
-
-    public static class TableScales implements BaseColumns, TableScalesColumns {
+    public static class TableScales {
 
         private TableScales() {
         }
 
         public static final String NAME = "scales";
 
-        private static final String[] COLUMNS = new String[]{
-                _ID, SCALE_NAME, TYPE, CLASS_STATIC, CLASS_DYNAMIC
-        };
-        private static final int _ID_INDEX = 0;
-        private static final int SCALE_NAME_INDEX = 1;
-        private static final int TYPE_INDEX = 2;
-        private static final int CLASS_STATIC_INDEX = 3;
-        private static final int CLASS_DYNAMIC_INDEX = 4;
+        public static final class Columns implements BaseColumns {
+            public static final String NAME = "name";
+            public static final String TYPE = "type";
+            public static final String CLASS_STATIC = "class_static";
+            public static final String CLASS_DYNAMIC = "class_dynamic";
+
+            private static final String[] ALL = new String[]{
+                    _ID, NAME, TYPE, CLASS_STATIC, CLASS_DYNAMIC
+            };
+
+            private static final int _ID_INDEX = 0;
+            private static final int NAME_INDEX = 1;
+            private static final int TYPE_INDEX = 2;
+            private static final int CLASS_STATIC_INDEX = 3;
+            private static final int CLASS_DYNAMIC_INDEX = 4;
+        }
 
         private static final String CREATE_STATEMENT = "CREATE TABLE " + NAME + "(" +
-                _ID + " INTEGER PRIMARY KEY ON CONFLICT REPLACE, " +
-                SCALE_NAME + " TEXT, " +
-                TYPE + " TEXT, " +
-                CLASS_STATIC + " INTEGER DEFAULT -1, " +
-                CLASS_DYNAMIC + " INTEGER DEFAULT -1" +
+                Columns._ID + " INTEGER PRIMARY KEY ON CONFLICT REPLACE, " +
+                Columns.NAME + " TEXT, " +
+                Columns.TYPE + " TEXT, " +
+                Columns.CLASS_STATIC + " INTEGER DEFAULT -1, " +
+                Columns.CLASS_DYNAMIC + " INTEGER DEFAULT -1" +
                 ");";
     }
 
@@ -178,11 +179,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                                                int classDynamic) {
         ContentValues values = new ContentValues();
 
-        values.put(TableScales._ID, id);
-        values.put(TableScales.SCALE_NAME, name);
-        values.put(TableScales.TYPE, type);
-        values.put(TableScales.CLASS_STATIC, classStatic);
-        values.put(TableScales.CLASS_DYNAMIC, classDynamic);
+        values.put(TableScales.Columns._ID, id);
+        values.put(TableScales.Columns.NAME, name);
+        values.put(TableScales.Columns.TYPE, type);
+        values.put(TableScales.Columns.CLASS_STATIC, classStatic);
+        values.put(TableScales.Columns.CLASS_DYNAMIC, classDynamic);
 
         return values;
     }
@@ -190,11 +191,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     @NonNull
     public static ScaleRecord getScaleRecord(@NonNull Cursor cursor) {
         return new ScaleRecord(
-                cursor.getLong(TableScales._ID_INDEX),
-                cursor.getString(TableScales.SCALE_NAME_INDEX),
-                cursor.getString(TableScales.TYPE_INDEX),
-                cursor.getInt(TableScales.CLASS_STATIC_INDEX),
-                cursor.getInt(TableScales.CLASS_DYNAMIC_INDEX));
+                cursor.getLong(TableScales.Columns._ID_INDEX),
+                cursor.getString(TableScales.Columns.NAME_INDEX),
+                cursor.getString(TableScales.Columns.TYPE_INDEX),
+                cursor.getInt(TableScales.Columns.CLASS_STATIC_INDEX),
+                cursor.getInt(TableScales.Columns.CLASS_DYNAMIC_INDEX));
     }
 
     @Nullable
@@ -212,11 +213,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getScales() {
-        return query(TableScales.NAME, TableScales.COLUMNS, null, null, TableScales.SCALE_NAME + DESC);
+        return query(TableScales.NAME, TableScales.Columns.ALL, null, null, TableScales.Columns.NAME + DESC);
     }
 
     public Cursor getScale(long id) {
-        return query(TableScales.NAME, TableScales.COLUMNS, BaseColumns._ID + EQUAL + id, null, null);
+        return query(TableScales.NAME, TableScales.Columns.ALL, BaseColumns._ID + EQUAL + id, null, null);
     }
 
 //    public Cursor getAll(String selection) {
@@ -262,19 +263,23 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public long insert(@NonNull SQLiteDatabase db, @NonNull String table, @NonNull ContentValues values) {
-        return db.insert(table, null, values);
+        return db.insertOrThrow(table, null, values);
     }
 
     public long insert(@NonNull String table, @NonNull ContentValues values) {
         return insert(getWritableDatabase(), table, values);
     }
 
+    public int update(@NonNull SQLiteDatabase db, @NonNull String table, @NonNull ContentValues values, @NonNull String whereClause) {
+        return db.update(table, values, whereClause, null);
+    }
+
     public int update(@NonNull String table, @NonNull ContentValues values, @NonNull String whereClause) {
-        return getWritableDatabase().update(table, values, whereClause, null);
+        return update(getWritableDatabase(), table, values, whereClause);
     }
 
     public int update(@NonNull String table, @NonNull ContentValues values, long id) {
-        return getWritableDatabase().update(table, values, BaseColumns._ID + EQUAL + id, null);
+        return update(table, values, BaseColumns._ID + EQUAL + id);
     }
 
     private int delete(@NonNull SQLiteDatabase db, @NonNull String table, @Nullable String whereClause) {

@@ -23,7 +23,7 @@ public class ActivityDialog extends AppCompatActivity implements
         FragmentInterface.OnFragmentChangeListener {
 
     private static final String EXTRA_DIALOG = "EXTRA_DIALOG";
-    public static final String EXTRA_ARGS = "EXTRA_ARGS";
+    private static final String EXTRA_ARGS = "EXTRA_ARGS";
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({DIALOG_SCALE_CHANGE})
@@ -67,16 +67,8 @@ public class ActivityDialog extends AppCompatActivity implements
 
             switch (getIntent().getIntExtra(EXTRA_DIALOG, -1)) {
                 case DIALOG_SCALE_CHANGE:
-                    fragment = FragmentFactory.getFragmentNewInstance(FragmentFactory.IDS.SCALE_CHANGE);
-
-                    Bundle args = getIntent().getBundleExtra(EXTRA_ARGS);
-                    if (args != null) {
-                        Bundle bundle = fragment.getArguments();
-                        if (bundle == null) bundle = new Bundle();
-                        bundle.putBundle(EXTRA_ARGS, args);
-                        fragment.setArguments(bundle);
-                    }
-
+                    fragment = FragmentFactory.getFragmentNewInstance(FragmentFactory.IDS.SCALE_CHANGE,
+                            getIntent().getBundleExtra(EXTRA_ARGS));
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown dialog type");

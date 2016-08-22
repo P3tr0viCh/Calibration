@@ -3,21 +3,21 @@
 
     <data>
 
-        <import type="ru.p3tr0vich.calibration.utils.UtilsFormat" />
+        <import type="ru.p3tr0vich.calibration.utils.UtilsRecordFormat"/>
 
         <variable
             name="scaleRecord"
-            type="ru.p3tr0vich.calibration.models.ScaleRecord" />
+            type="ru.p3tr0vich.calibration.models.ScaleRecord"/>
     </data>
 
     <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-        android:layout_width="match_parent"
-        android:layout_height="72dp"
-        android:clickable="false"
-        android:descendantFocusability="blocksDescendants"
-        android:orientation="horizontal"
-        android:paddingEnd="16dp"
-        android:paddingStart="16dp">
+                    android:layout_width="match_parent"
+                    android:layout_height="72dp"
+                    android:clickable="false"
+                    android:descendantFocusability="blocksDescendants"
+                    android:orientation="horizontal"
+                    android:paddingEnd="16dp"
+                    android:paddingStart="16dp">
 
         <TextView
             android:id="@+id/text_name"
@@ -28,9 +28,9 @@
             android:layout_toStartOf="@+id/btn_menu"
             android:clickable="false"
             android:gravity="bottom"
-            android:text="@{scaleRecord.getName}"
+            android:text="@{UtilsRecordFormat.getScaleName(scaleRecord)}"
             android:textAppearance="@style/AppTheme.TextAppearance.List"
-            tools:text="@string/text_name" />
+            tools:text="@string/text_name"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -50,7 +50,7 @@
                 android:gravity="top"
                 android:text="@{String.valueOf(scaleRecord.getId)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_id" />
+                tools:text="@string/text_id"/>
 
             <TextView
                 android:id="@+id/text_type"
@@ -60,7 +60,7 @@
                 android:gravity="top"
                 android:text="@{scaleRecord.getType}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_type" />
+                tools:text="@string/text_type"/>
 
             <TextView
                 android:id="@+id/text_class_static"
@@ -70,7 +70,7 @@
                 android:gravity="top"
                 android:text="@{String.valueOf(scaleRecord.getClassStatic)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_class_static" />
+                tools:text="@string/text_class_static"/>
 
             <TextView
                 android:id="@+id/text_class_dynamic"
@@ -80,21 +80,21 @@
                 android:gravity="top"
                 android:text="@{String.valueOf(scaleRecord.getClassDynamic)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_class_dynamic" />
+                tools:text="@string/text_class_dynamic"/>
         </LinearLayout>
 
         <ImageButton
             android:id="@+id/btn_menu"
             android:layout_width="48dp"
             android:layout_height="47dp"
-            android:layout_alignParentStart="false"
             android:layout_alignParentEnd="true"
+            android:layout_alignParentStart="false"
             android:layout_alignParentTop="false"
             android:layout_centerVertical="true"
             android:adjustViewBounds="false"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
             android:src="@drawable/ic_dots_vertical"
-            tools:ignore="ContentDescription" />
+            tools:ignore="ContentDescription"/>
     </RelativeLayout>
 </layout>

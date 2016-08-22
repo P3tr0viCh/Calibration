@@ -14,6 +14,8 @@ import static ru.p3tr0vich.calibration.factories.FragmentFactory.IDS.BAD_ID;
 public abstract class FragmentPreferencesBase extends PreferenceFragmentCompat
         implements FragmentInterface {
 
+    private static final String KEY_ID = "FRAGMENT_BASE_KEY_ID";
+
     @FragmentFactory.IDS.Id
     private int mFragmentId = BAD_ID;
 

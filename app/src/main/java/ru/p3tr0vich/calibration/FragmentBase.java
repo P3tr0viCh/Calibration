@@ -13,6 +13,8 @@ import static ru.p3tr0vich.calibration.factories.FragmentFactory.IDS.BAD_ID;
 
 public abstract class FragmentBase extends Fragment implements FragmentInterface {
 
+    private static final String KEY_ID = "FRAGMENT_BASE_KEY_ID";
+
     @FragmentFactory.IDS.Id
     private int mFragmentId = BAD_ID;
 
@@ -22,8 +24,9 @@ public abstract class FragmentBase extends Fragment implements FragmentInterface
 
     @SuppressWarnings("WeakerAccess")
     @NonNull
-    public static Fragment newInstance(@FragmentFactory.IDS.Id int id, @NonNull Fragment fragment) {
-        Bundle args = new Bundle();
+    public static Fragment newInstance(@FragmentFactory.IDS.Id int id, @NonNull Fragment fragment,
+                                       @Nullable Bundle args) {
+        if (args == null) args = new Bundle();
         args.putInt(KEY_ID, id);
 
         fragment.setArguments(args);

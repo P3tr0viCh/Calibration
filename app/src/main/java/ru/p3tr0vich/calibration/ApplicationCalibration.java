@@ -7,7 +7,7 @@ import android.support.annotation.NonNull;
 
 import ru.p3tr0vich.calibration.utils.UtilsLog;
 
-public class ApplicationFuel extends Application {
+public class ApplicationCalibration extends Application {
 
     @SuppressLint("StaticFieldLeak")
     private static Context sContext;
@@ -17,15 +17,15 @@ public class ApplicationFuel extends Application {
         super.onCreate();
         sContext = getApplicationContext();
 
-        UtilsLog.d("ApplicationFuel", "**********************************************************");
-        UtilsLog.d("ApplicationFuel", "onCreate");
+        UtilsLog.d("ApplicationCalibration", "**********************************************************");
+        UtilsLog.d("ApplicationCalibration", "onCreate");
 
 //        ContentObserverService.start(this);
     }
 
     @Override
     public void onTerminate() {
-        UtilsLog.d("ApplicationFuel", "onTerminate");
+        UtilsLog.d("ApplicationCalibration", "onTerminate");
         super.onTerminate();
     }
 

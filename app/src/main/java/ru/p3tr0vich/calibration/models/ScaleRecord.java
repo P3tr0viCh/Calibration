@@ -88,25 +88,27 @@ public class ScaleRecord implements BaseRecord, Parcelable {
         mName = name;
     }
 
-    private Bundle getBundle(@NonNull Bundle bundle) {
+    @NonNull
+    public Bundle putToBundle(@NonNull Bundle bundle) {
         bundle.putParcelable(NAME, this);
         return bundle;
     }
 
-    @Override
-    public Bundle getBundle() {
-        return getBundle(new Bundle());
+    @NonNull
+    public Bundle putToBundle() {
+        return putToBundle(new Bundle());
     }
 
+    @NonNull
     @Override
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
-        values.put(DatabaseHelper.TableScales._ID, mId);
-        values.put(DatabaseHelper.TableScales.NAME, mName);
-        values.put(DatabaseHelper.TableScales.TYPE, mType);
-        values.put(DatabaseHelper.TableScales.CLASS_STATIC, mClassStatic);
-        values.put(DatabaseHelper.TableScales.CLASS_DYNAMIC, mClassDynamic);
+        values.put(DatabaseHelper.TableScales.Columns._ID, mId);
+        values.put(DatabaseHelper.TableScales.Columns.NAME, mName);
+        values.put(DatabaseHelper.TableScales.Columns.TYPE, mType);
+        values.put(DatabaseHelper.TableScales.Columns.CLASS_STATIC, mClassStatic);
+        values.put(DatabaseHelper.TableScales.Columns.CLASS_DYNAMIC, mClassDynamic);
 
         return values;
     }
@@ -125,11 +127,15 @@ public class ScaleRecord implements BaseRecord, Parcelable {
         dest.writeInt(mClassDynamic);
     }
 
+    private ScaleRecord(Parcel in) {
+        this(in.readLong(), in.readString(), in.readString(), in.readInt(), in.readInt());
+    }
+
     public static final Parcelable.Creator<ScaleRecord> CREATOR = new Parcelable.Creator<ScaleRecord>() {
 
         @Override
         public ScaleRecord createFromParcel(Parcel in) {
-            return new ScaleRecord(in.readLong(), in.readString(), in.readString(), in.readInt(), in.readInt());
+            return new ScaleRecord(in);
         }
 
         @Override

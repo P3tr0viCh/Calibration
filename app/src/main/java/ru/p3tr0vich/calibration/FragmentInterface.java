@@ -7,8 +7,6 @@ import ru.p3tr0vich.calibration.factories.FragmentFactory;
 
 public interface FragmentInterface {
 
-    String KEY_ID = "KEY_ID";
-
     @FragmentFactory.IDS.Id
     int getFragmentId();
 

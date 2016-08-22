@@ -13,35 +13,21 @@ import ru.p3tr0vich.calibration.models.ScaleRecord;
 import ru.p3tr0vich.calibration.utils.Utils;
 import ru.p3tr0vich.calibration.utils.UtilsFormat;
 
-import static ru.p3tr0vich.calibration.ActivityDialog.EXTRA_ARGS;
-
 public class FragmentActivityDialogScaleChange extends FragmentBase
         implements ActivityDialog.ActivityDialogFragment {
 
-    private ScaleRecord mRecord;
+    private static final String KEY_RECORD_ID = "KEY_RECORD_ID";
+
+    private long mRecordId;
 
     private EditText mEditName;
     private EditText mEditId;
 
     @Override
     public String getTitle() {
-        return getContext().getString(mRecord.getId() != 0 ?
+        return getContext().getString(mRecordId != 0 ?
                 R.string.dialog_title_update :
                 R.string.dialog_title_add);
-    }
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        Bundle bundle = getArguments();
-        bundle = bundle.getBundle(EXTRA_ARGS);
-
-        if (bundle != null && bundle.containsKey(ScaleRecord.NAME)) {
-            mRecord = new ScaleRecord(bundle);
-        } else {
-            mRecord = new ScaleRecord();
-        }
     }
 
     @Nullable
@@ -53,26 +39,47 @@ public class FragmentActivityDialogScaleChange extends FragmentBase
         mEditId = (EditText) view.findViewById(R.id.edit_id);
 
         if (savedInstanceState == null) {
-            mEditName.setText(mRecord.getName());
-            UtilsFormat.longToEditText(mEditId, mRecord.getId(), false);
+            Bundle bundle = getArguments();
+
+            ScaleRecord record;
+
+            if (bundle != null && bundle.containsKey(ScaleRecord.NAME)) {
+                record = new ScaleRecord(bundle);
+            } else {
+                record = new ScaleRecord();
+            }
+
+            mRecordId = record.getId();
+
+            mEditName.setText(record.getName());
+            UtilsFormat.longToEditText(mEditId, record.getId(), false);
+        } else {
+            mRecordId = savedInstanceState.getLong(KEY_RECORD_ID);
         }
 
         return view;
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putLong(KEY_RECORD_ID, mRecordId);
+    }
+
     /**
      * Проверяет введённые данные перед сохранением.
      *
-     * @return Истина, если данные валидны, ложь, если нет (например, существуте запись с введённым айди).
+     * @return Истина, если данные валидны, ложь, если нет (например, существует запись с введённым айди).
      */
     private boolean checkRecord() {
         if (TextUtils.isEmpty(mEditId.getText())) {
+            mEditId.requestFocus();
             Utils.toast(R.string.message_error_need_id);
             return false;
         }
 
         long id = UtilsFormat.editTextToLong(mEditId);
         if (id <= 0) {
+            mEditId.requestFocus();
             Utils.toast(R.string.message_error_bad_id);
             return false;
         }
@@ -86,17 +93,21 @@ public class FragmentActivityDialogScaleChange extends FragmentBase
      * @return Истина, если сохранение успешно.
      */
     private boolean saveRecord() {
-        mRecord.setId(UtilsFormat.editTextToLong(mEditId));
-        mRecord.setName(mEditName.getText().toString());
+        Utils.hideKeyboard(getActivity());
 
-        if (mRecord.getId() != 0) {
-            if (!ContentProviderHelper.updateRecord(getContext(), mRecord)) {
+        ScaleRecord record = new ScaleRecord(
+                UtilsFormat.editTextToLong(mEditId),
+                mEditName.getText().toString(),
+                "", 0, 0);
+
+        if (mRecordId != 0) {
+            if (!ContentProviderHelper.updateRecord(getContext(), record)) {
                 Utils.toast(R.string.message_error_update_record);
 
                 return false;
             }
         } else {
-            if (!ContentProviderHelper.insertRecord(getContext(), mRecord)) {
+            if (!ContentProviderHelper.insertRecord(getContext(), record)) {
                 Utils.toast(R.string.message_error_insert_record);
 
                 return false;

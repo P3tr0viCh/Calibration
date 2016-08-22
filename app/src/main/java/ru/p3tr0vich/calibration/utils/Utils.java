@@ -22,7 +22,7 @@ import android.widget.EditText;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import ru.p3tr0vich.calibration.ApplicationFuel;
+import ru.p3tr0vich.calibration.ApplicationCalibration;
 import ru.p3tr0vich.calibration.R;
 import ru.p3tr0vich.calibration.helpers.SystemServicesHelper;
 
@@ -68,11 +68,11 @@ public class Utils {
     }
 
     public static boolean isPhone() {
-        return ApplicationFuel.getContext().getResources().getBoolean(R.bool.is_phone);
+        return ApplicationCalibration.getContext().getResources().getBoolean(R.bool.is_phone);
     }
 
     private static boolean isPortrait() {
-        return ApplicationFuel.getContext().getResources().getBoolean(R.bool.is_portrait);
+        return ApplicationCalibration.getContext().getResources().getBoolean(R.bool.is_portrait);
     }
 
     public static boolean isPhoneInPortrait() {
@@ -80,18 +80,18 @@ public class Utils {
     }
 
     public static boolean isDebuggable() {
-        return (ApplicationFuel.getContext().getApplicationInfo().flags &
+        return (ApplicationCalibration.getContext().getApplicationInfo().flags &
                 ApplicationInfo.FLAG_DEBUGGABLE) != 0;
     }
 
     public static int getInteger(@IntegerRes int id) {
-        return ApplicationFuel.getContext().getResources().getInteger(id);
+        return ApplicationCalibration.getContext().getResources().getInteger(id);
     }
 
     @ColorInt
     public static int getColor(@ColorRes int id) {
         //noinspection deprecation
-        return ApplicationFuel.getContext().getResources().getColor(id);
+        return ApplicationCalibration.getContext().getResources().getColor(id);
     }
 
     public static int getSupportActionBarSize(Context context) {
@@ -105,11 +105,11 @@ public class Utils {
     }
 
     public static void toast(@StringRes int resId) {
-        Toast.makeText(ApplicationFuel.getContext(), resId, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ApplicationCalibration.getContext(), resId, Toast.LENGTH_SHORT).show();
     }
 
     public static void toast(@NonNull String text) {
-        Toast.makeText(ApplicationFuel.getContext(), text, Toast.LENGTH_SHORT).show();
+        Toast.makeText(ApplicationCalibration.getContext(), text, Toast.LENGTH_SHORT).show();
     }
 
     public static void openUrl(@NonNull Context context, @NonNull String url,

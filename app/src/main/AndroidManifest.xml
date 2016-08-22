@@ -4,7 +4,7 @@
     package="ru.p3tr0vich.calibration">
 
     <application
-        android:name=".ApplicationFuel"
+        android:name=".ApplicationCalibration"
         android:allowBackup="true"
         android:fullBackupContent="@xml/backup_scheme"
         android:icon="@mipmap/ic_launcher"

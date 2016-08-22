@@ -124,66 +124,87 @@ public class ContentProviderHelper extends ContentProvider {
     @Override
     public Cursor query(@NonNull Uri uri, String[] projection, String selection,
                         String[] selectionArgs, String sortOrder) {
-//        UtilsLog.d(TAG, "query, uri == " + uri);
-        switch (sURIMatcher.match(uri)) {
-            case DATABASE_SCALES:
-                return mDatabaseHelper.getScales();
-            case DATABASE_SCALES_ITEM:
-                return mDatabaseHelper.getScale(ContentUris.parseId(uri));
+        try {
+            switch (sURIMatcher.match(uri)) {
+                case DATABASE_SCALES:
+                    return mDatabaseHelper.getScales();
+                case DATABASE_SCALES_ITEM:
+                    return mDatabaseHelper.getScale(ContentUris.parseId(uri));
 
-            case PREFERENCES:
-                return null;// mPreferencesHelper.getPreferences();
-            case PREFERENCES_ITEM:
-                return null;// mPreferencesHelper.getPreference(uri.getLastPathSegment());
-            default:
-                UtilsLog.d(TAG, "query", "sURIMatcher.match() == default, uri == " + uri);
-                return null;
+                case PREFERENCES:
+                    return null;// mPreferencesHelper.getPreferences();
+                case PREFERENCES_ITEM:
+                    return null;// mPreferencesHelper.getPreference(uri.getLastPathSegment());
+                default:
+                    UtilsLog.d(TAG, "query", "sURIMatcher.match() == default, uri == " + uri);
+                    return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            UtilsLog.d(TAG, "query", "exception == " + e.toString());
+            return null;
         }
     }
 
     @Nullable
     @Override
     public Uri insert(@NonNull Uri uri, ContentValues values) {
-        switch (sURIMatcher.match(uri)) {
-            case DATABASE_SCALES:
-                return ContentUris.withAppendedId(URI_DATABASE_SCALES,
-                        mDatabaseHelper.insert(DatabaseHelper.TableScales.NAME, values));
-            default:
-                UtilsLog.d(TAG, "insert", "sURIMatcher.match() == default, uri == " + uri);
-                return null;
+        try {
+            switch (sURIMatcher.match(uri)) {
+                case DATABASE_SCALES:
+                    return ContentUris.withAppendedId(URI_DATABASE_SCALES,
+                            mDatabaseHelper.insert(DatabaseHelper.TableScales.NAME, values));
+                default:
+                    UtilsLog.d(TAG, "insert", "sURIMatcher.match() == default, uri == " + uri);
+                    return null;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            UtilsLog.d(TAG, "insert", "exception == " + e.toString());
+            return null;
         }
     }
 
     @Override
     public int update(@NonNull Uri uri, ContentValues values, String selection, String[] selectionArgs) {
-//        UtilsLog.d(TAG, "update, uri == " + uri);
-        switch (sURIMatcher.match(uri)) {
-            case DATABASE_SCALES:
-                return mDatabaseHelper.update(DatabaseHelper.TableScales.NAME, values, selection);
-            case DATABASE_SCALES_ITEM:
-                return mDatabaseHelper.update(DatabaseHelper.TableScales.NAME, values, ContentUris.parseId(uri));
+        try {
+            switch (sURIMatcher.match(uri)) {
+                case DATABASE_SCALES:
+                    return mDatabaseHelper.update(DatabaseHelper.TableScales.NAME, values, selection);
+                case DATABASE_SCALES_ITEM:
+                    return mDatabaseHelper.update(DatabaseHelper.TableScales.NAME, values, ContentUris.parseId(uri));
 
-            case PREFERENCES:
-                return -1;// mPreferencesHelper.setPreferences(values, null);
-            case PREFERENCES_ITEM:
-                return -1; // mPreferencesHelper.setPreferences(values, uri.getLastPathSegment());
-            default:
-                UtilsLog.d(TAG, "update", "sURIMatcher.match() == default, uri == " + uri);
-                return -1;
+                case PREFERENCES:
+                    return -1;// mPreferencesHelper.setPreferences(values, null);
+                case PREFERENCES_ITEM:
+                    return -1; // mPreferencesHelper.setPreferences(values, uri.getLastPathSegment());
+                default:
+                    UtilsLog.d(TAG, "update", "sURIMatcher.match() == default, uri == " + uri);
+                    return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            UtilsLog.d(TAG, "update", "exception == " + e.toString());
+            return -1;
         }
     }
 
     @Override
     public int delete(@NonNull Uri uri, String selection, String[] selectionArgs) {
-//        UtilsLog.d(TAG, "delete, uri == " + uri);
-        switch (sURIMatcher.match(uri)) {
-            case DATABASE_SCALES:
-                return mDatabaseHelper.delete(DatabaseHelper.TableScales.NAME, selection);
-            case DATABASE_SCALES_ITEM:
-                return mDatabaseHelper.delete(DatabaseHelper.TableScales.NAME, ContentUris.parseId(uri));
-            default:
-                UtilsLog.d(TAG, "delete", "sURIMatcher.match() == default, uri == " + uri);
-                return -1;
+        try {
+            switch (sURIMatcher.match(uri)) {
+                case DATABASE_SCALES:
+                    return mDatabaseHelper.delete(DatabaseHelper.TableScales.NAME, selection);
+                case DATABASE_SCALES_ITEM:
+                    return mDatabaseHelper.delete(DatabaseHelper.TableScales.NAME, ContentUris.parseId(uri));
+                default:
+                    UtilsLog.d(TAG, "delete", "sURIMatcher.match() == default, uri == " + uri);
+                    return -1;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            UtilsLog.d(TAG, "delete", "exception == " + e.toString());
+            return -1;
         }
     }
 

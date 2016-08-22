@@ -13,8 +13,8 @@ import ru.p3tr0vich.calibration.models.ScaleRecord;
 
 public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
 
-    private static final int TYPE_HEADER = 0;
-    private static final int TYPE_ITEM = 1;
+    private static final int TYPE_ITEM = 0;
+    private static final int TYPE_HEADER = 1;
     private static final int TYPE_FOOTER = 2;
 
     public ScalesAdapter(View.OnClickListener onClickListener, boolean showHeader, boolean showFooter) {
@@ -24,6 +24,13 @@ public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
     @Override
     public int getFooterType() {
         return TYPE_FOOTER;
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+        if (isShowHeader() && position == HEADER_POSITION) return TYPE_HEADER;
+        if (isShowFooter() && position == getRecords().size() - 1) return TYPE_FOOTER;
+        return TYPE_ITEM;
     }
 
     @Override
@@ -42,7 +49,7 @@ public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
                         LayoutInflater.from(parent.getContext()).
                                 inflate(R.layout.partial_scales_recycler_view_footer, parent, false));
             default:
-                throw new RuntimeException("onCreateViewHolder: wrong viewType == " + viewType);
+                throw new IllegalArgumentException("onCreateViewHolder: wrong viewType == " + viewType);
         }
     }
 
@@ -60,16 +67,16 @@ public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
         }
     }
 
-    public class ScaleItemViewHolder extends RecyclerView.ViewHolder {
+    private static class ScaleItemViewHolder extends RecyclerView.ViewHolder {
 
         private final ListItemScaleBinding mBinding;
 
-        public ScaleItemViewHolder(@NonNull View itemView) {
+        ScaleItemViewHolder(@NonNull View itemView) {
             super(itemView);
             mBinding = DataBindingUtil.bind(itemView);
         }
 
-        public ListItemScaleBinding getBinding() {
+        ListItemScaleBinding getBinding() {
             return mBinding;
         }
     }

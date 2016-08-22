@@ -7,7 +7,7 @@ import android.widget.TextView;
 
 import java.text.DecimalFormat;
 
-import ru.p3tr0vich.calibration.ApplicationFuel;
+import ru.p3tr0vich.calibration.ApplicationCalibration;
 
 public class UtilsFormat {
 
@@ -20,7 +20,7 @@ public class UtilsFormat {
 
 //        flags |= DateUtils.FORMAT_SHOW_TIME;
 
-        return DateUtils.formatDateTime(ApplicationFuel.getContext(), date, flags);
+        return DateUtils.formatDateTime(ApplicationCalibration.getContext(), date, flags);
     }
 
     public static String dateToString(long date, boolean withYear) {

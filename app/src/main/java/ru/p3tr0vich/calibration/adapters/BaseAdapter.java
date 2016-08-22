@@ -62,7 +62,7 @@ public abstract class BaseAdapter<T extends BaseRecord> extends RecyclerView.Ada
         mShowHeader = showHeader ? HF_SHOW : HF_HIDE;
     }
 
-    private boolean isShowFooter() {
+    public boolean isShowFooter() {
         return mShowFooter == HF_SHOW;
     }
 
@@ -107,9 +107,9 @@ public abstract class BaseAdapter<T extends BaseRecord> extends RecyclerView.Ada
         return getRecords().get(position).getId();
     }
 
-    public class HeaderViewHolder extends RecyclerView.ViewHolder {
+    static class HeaderViewHolder extends RecyclerView.ViewHolder {
 
-        public HeaderViewHolder(View itemView) {
+        HeaderViewHolder(View itemView) {
             super(itemView);
         }
     }

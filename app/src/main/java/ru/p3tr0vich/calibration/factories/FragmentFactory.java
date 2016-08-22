@@ -1,13 +1,15 @@
 package ru.p3tr0vich.calibration.factories;
 
+import android.os.Bundle;
 import android.support.annotation.IntDef;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import ru.p3tr0vich.calibration.ApplicationFuel;
+import ru.p3tr0vich.calibration.ApplicationCalibration;
 import ru.p3tr0vich.calibration.FragmentAbout;
 import ru.p3tr0vich.calibration.FragmentActivityDialogScaleChange;
 import ru.p3tr0vich.calibration.FragmentBase;
@@ -62,22 +64,36 @@ public class FragmentFactory {
     }
 
     @NonNull
-    public static Fragment getFragmentNewInstance(@IDS.Id int fragmentId) {
+    public static Fragment getFragmentNewInstance(@IDS.Id int fragmentId, @Nullable Bundle args) {
+        Fragment fragment;
+
         switch (fragmentId) {
             case IDS.CALIBRATIONS:
-                return FragmentBase.newInstance(fragmentId, new FragmentCalibrations());
+                fragment = new FragmentCalibrations();
+                break;
             case IDS.SCALES:
-                return FragmentBase.newInstance(fragmentId, new FragmentScales());
+                fragment = new FragmentScales();
+                break;
             case IDS.PREFERENCES:
-                return FragmentBase.newInstance(fragmentId, new FragmentPreferences());
+                fragment = new FragmentPreferences();
+                break;
             case IDS.ABOUT:
-                return FragmentBase.newInstance(fragmentId, new FragmentAbout());
+                fragment = new FragmentAbout();
+                break;
             case IDS.SCALE_CHANGE:
-                return FragmentBase.newInstance(fragmentId, new FragmentActivityDialogScaleChange());
+                fragment = new FragmentActivityDialogScaleChange();
+                break;
             case IDS.BAD_ID:
             default:
-                throw new IllegalArgumentException(ApplicationFuel.getContext().getString(R.string.exception_fragment_bad_id));
+                throw new IllegalArgumentException(ApplicationCalibration.getContext().getString(R.string.exception_fragment_bad_id));
         }
+
+        return FragmentBase.newInstance(fragmentId, fragment, args);
+    }
+
+    @NonNull
+    public static Fragment getFragmentNewInstance(@IDS.Id int fragmentId) {
+        return getFragmentNewInstance(fragmentId, null);
     }
 
     @IDS.Id
@@ -100,7 +116,7 @@ public class FragmentFactory {
                 return TAGS.SCALE_CHANGE;
             case IDS.BAD_ID:
             default:
-                throw new IllegalArgumentException(ApplicationFuel.getContext().getString(R.string.exception_fragment_bad_id));
+                throw new IllegalArgumentException(ApplicationCalibration.getContext().getString(R.string.exception_fragment_bad_id));
         }
     }
 }
