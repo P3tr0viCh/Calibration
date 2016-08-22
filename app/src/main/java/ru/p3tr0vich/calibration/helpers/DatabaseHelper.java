@@ -52,8 +52,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 Columns._ID + " INTEGER PRIMARY KEY ON CONFLICT REPLACE, " +
                 Columns.NAME + " TEXT, " +
                 Columns.TYPE + " TEXT, " +
-                Columns.CLASS_STATIC + " INTEGER DEFAULT -1, " +
-                Columns.CLASS_DYNAMIC + " INTEGER DEFAULT -1" +
+                Columns.CLASS_STATIC + " INTEGER DEFAULT 0, " +
+                Columns.CLASS_DYNAMIC + " INTEGER DEFAULT 0" +
                 ");";
     }
 
@@ -190,6 +190,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @NonNull
     public static ScaleRecord getScaleRecord(@NonNull Cursor cursor) {
+        //noinspection WrongConstant
         return new ScaleRecord(
                 cursor.getLong(TableScales.Columns._ID_INDEX),
                 cursor.getString(TableScales.Columns.NAME_INDEX),
@@ -213,11 +214,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getScales() {
-        return query(TableScales.NAME, TableScales.Columns.ALL, null, null, TableScales.Columns.NAME + DESC);
+        return query(TableScales.NAME, TableScales.Columns.ALL, null, null,
+                TableScales.Columns.NAME + ", " + TableScales.Columns._ID);
     }
 
     public Cursor getScale(long id) {
-        return query(TableScales.NAME, TableScales.Columns.ALL, BaseColumns._ID + EQUAL + id, null, null);
+        return query(TableScales.NAME, TableScales.Columns.ALL, TableScales.Columns._ID + EQUAL + id, null, null);
     }
 
 //    public Cursor getAll(String selection) {

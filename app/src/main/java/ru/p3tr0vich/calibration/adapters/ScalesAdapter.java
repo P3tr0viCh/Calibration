@@ -13,44 +13,8 @@ import ru.p3tr0vich.calibration.models.ScaleRecord;
 
 public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
 
-    private static final int TYPE_ITEM = 0;
-    private static final int TYPE_HEADER = 1;
-    private static final int TYPE_FOOTER = 2;
-
     public ScalesAdapter(View.OnClickListener onClickListener, boolean showHeader, boolean showFooter) {
         super(onClickListener, showHeader, showFooter);
-    }
-
-    @Override
-    public int getFooterType() {
-        return TYPE_FOOTER;
-    }
-
-    @Override
-    public int getItemViewType(int position) {
-        if (isShowHeader() && position == HEADER_POSITION) return TYPE_HEADER;
-        if (isShowFooter() && position == getRecords().size() - 1) return TYPE_FOOTER;
-        return TYPE_ITEM;
-    }
-
-    @Override
-    public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        switch (viewType) {
-            case TYPE_ITEM:
-                return new ScaleItemViewHolder(
-                        ListItemScaleBinding.inflate(
-                                LayoutInflater.from(parent.getContext()), parent, false).getRoot());
-            case TYPE_HEADER:
-                return new HeaderViewHolder(
-                        LayoutInflater.from(parent.getContext()).
-                                inflate(R.layout.partial_scales_recycler_view_header, parent, false));
-            case TYPE_FOOTER:
-                return new HeaderViewHolder(
-                        LayoutInflater.from(parent.getContext()).
-                                inflate(R.layout.partial_scales_recycler_view_footer, parent, false));
-            default:
-                throw new IllegalArgumentException("onCreateViewHolder: wrong viewType == " + viewType);
-        }
     }
 
     @Override
@@ -65,6 +29,24 @@ public class ScalesAdapter extends BaseAdapter<ScaleRecord> {
             binding.btnMenu.setTag(record.getId());
             binding.btnMenu.setOnClickListener(getOnClickListener());
         }
+    }
+
+    @NonNull
+    @Override
+    public RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent) {
+        return new ScaleItemViewHolder(
+                ListItemScaleBinding.inflate(
+                        LayoutInflater.from(parent.getContext()), parent, false).getRoot());
+    }
+
+    @Override
+    public int getHeaderLayout() {
+        return R.layout.partial_scales_recycler_view_header;
+    }
+
+    @Override
+    public int getFooterLayout() {
+        return R.layout.partial_scales_recycler_view_footer;
     }
 
     private static class ScaleItemViewHolder extends RecyclerView.ViewHolder {

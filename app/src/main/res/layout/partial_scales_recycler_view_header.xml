@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="@dimen/recycler_view_header_height"
-    android:descendantFocusability="blocksDescendants"
-    android:orientation="horizontal"
-    android:paddingEnd="16dp"
-    android:paddingStart="16dp">
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/recycler_view_header_height"
+                android:descendantFocusability="blocksDescendants"
+                android:orientation="horizontal"
+                android:paddingEnd="16dp"
+                android:paddingStart="16dp">
 
     <TextView
-        android:id="@+id/text_name"
+        android:id="@+id/text_name_and_id"
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_alignParentStart="true"
@@ -16,52 +17,49 @@
         android:layout_toStartOf="@+id/space_btn_menu"
         android:clickable="false"
         android:gravity="center_vertical"
-        android:text="@string/text_name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+        android:text="@string/header_scale_name_and_id"
+        android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="20dp"
         android:layout_alignParentStart="true"
-        android:layout_below="@+id/text_name"
+        android:layout_below="@+id/text_name_and_id"
         android:layout_marginStart="16dp"
         android:layout_toStartOf="@+id/space_btn_menu"
         android:gravity="center_vertical"
         android:orientation="horizontal">
 
         <TextView
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/text_id"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            android:layout_alignParentStart="true"
+            android:layout_toStartOf="@+id/text_class_static"
+            android:text="@string/header_scale_type"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/text_class_static"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/text_type"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
+            android:layout_toStartOf="@+id/text_class_dynamic"
+            android:text="@string/header_scale_class_static"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"/>
 
         <TextView
-            android:layout_width="match_parent"
+            android:id="@+id/text_class_dynamic"
+            android:layout_width="70dp"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/text_class_static"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@string/text_class_dynamic"
-            android:textAppearance="@style/TextAppearance.AppCompat.Caption" />
-    </LinearLayout>
+            android:layout_alignParentEnd="true"
+            android:text="@string/header_scale_class_dynamic"
+            android:textAppearance="@style/TextAppearance.AppCompat.Caption"
+            android:gravity="center_horizontal"/>
+    </RelativeLayout>
 
     <Space
         android:id="@+id/space_btn_menu"
         android:layout_width="48dp"
         android:layout_height="match_parent"
         android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true" />
+        android:layout_centerVertical="true"/>
 </RelativeLayout>

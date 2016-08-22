@@ -24,13 +24,48 @@
 
     <string name="action_save">Сохранить</string>
 
-    <string name="text_name">Название</string>
-    <string name="text_id">Номер</string>
-    <string name="text_type">Тип</string>
-    <string name="text_class_static">Статика</string>
-    <string name="text_class_dynamic">Динамика</string>
+    <string name="header_scale_name_and_id">Название (номер)</string>
+    <string name="header_scale_type">Тип</string>
+    <string name="header_scale_class_static">Статика</string>
+    <string name="header_scale_class_dynamic">Динамика</string>
 
-    <string name="text_scale_name">%1$s (%2$d)</string>
+    <string name="text_scale_name">Название</string>
+    <string name="text_scale_id">Номер</string>
+    <string name="text_scale_type">Тип</string>
+    <string name="text_scale_class">Класс точности</string>
+    <string name="text_scale_class_static">в статике</string>
+    <string name="text_scale_class_dynamic">в динамике</string>
+
+    <string name="item_scale_name">%1$s (%2$d)</string>
+    <string name="item_scale_name_empty">Без названия</string>
+
+    <string name="item_scale_type_empty">Не указан</string>
+
+    <string name="text_class_static_none">Нет</string>
+    <string name="text_class_static_unknown">Другой (%d)</string>
+    <string name="text_class_static_high">Высокий</string>
+    <string name="text_class_static_medium">Средний</string>
+    <string name="text_class_static_low">Низкий</string>
+
+    <string-array name="spinner_class_static">
+        <item>@string/text_class_static_none</item>
+        <item>@string/text_class_static_high</item>
+        <item>@string/text_class_static_medium</item>
+        <item>@string/text_class_static_low</item>
+    </string-array>
+
+    <string name="text_class_dynamic_none">Нет</string>
+    <string name="text_class_dynamic_unknown">Другой (%d)</string>
+    <string name="text_class_dynamic_0_dot_5">0.5</string>
+    <string name="text_class_dynamic_1">1</string>
+    <string name="text_class_dynamic_2">2</string>
+
+    <string-array name="spinner_class_dynamic">
+        <item>@string/text_class_dynamic_none</item>
+        <item>@string/text_class_dynamic_0_dot_5</item>
+        <item>@string/text_class_dynamic_1</item>
+        <item>@string/text_class_dynamic_2</item>
+    </string-array>
 
     <string name="text_no_data">Нет записей</string>
 

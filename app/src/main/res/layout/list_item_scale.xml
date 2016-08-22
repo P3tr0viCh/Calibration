@@ -20,7 +20,7 @@
                     android:paddingStart="16dp">
 
         <TextView
-            android:id="@+id/text_name"
+            android:id="@+id/text_name_and_id"
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_alignParentStart="true"
@@ -28,60 +28,50 @@
             android:layout_toStartOf="@+id/btn_menu"
             android:clickable="false"
             android:gravity="bottom"
-            android:text="@{UtilsRecordFormat.getScaleName(scaleRecord)}"
+            android:text="@{UtilsRecordFormat.getScaleNameAndId(context, scaleRecord)}"
             android:textAppearance="@style/AppTheme.TextAppearance.List"
-            tools:text="@string/text_name"/>
+            tools:text="@string/header_scale_name_and_id"/>
 
-        <LinearLayout
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@+id/btn_menu"
-            android:gravity="top"
-            android:orientation="horizontal">
-
-            <TextView
-                android:id="@+id/text_id"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="top"
-                android:text="@{String.valueOf(scaleRecord.getId)}"
-                android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_id"/>
+            android:gravity="top">
 
             <TextView
                 android:id="@+id/text_type"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_alignParentStart="true"
+                android:layout_toStartOf="@+id/text_class_static"
                 android:gravity="top"
-                android:text="@{scaleRecord.getType}"
+                android:text="@{UtilsRecordFormat.getScaleType(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_type"/>
+                tools:text="@string/header_scale_type"/>
 
             <TextView
                 android:id="@+id/text_class_static"
-                android:layout_width="match_parent"
+                android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_toStartOf="@+id/text_class_dynamic"
                 android:gravity="top"
-                android:text="@{String.valueOf(scaleRecord.getClassStatic)}"
+                android:text="@{UtilsRecordFormat.getScaleClassStatic(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_class_static"/>
+                tools:text="@string/header_scale_class_static"/>
 
             <TextView
                 android:id="@+id/text_class_dynamic"
-                android:layout_width="match_parent"
+                android:layout_width="70dp"
                 android:layout_height="match_parent"
-                android:layout_weight="1"
-                android:gravity="top"
-                android:text="@{String.valueOf(scaleRecord.getClassDynamic)}"
+                android:layout_alignParentEnd="true"
+                android:gravity="top|center_horizontal"
+                android:text="@{UtilsRecordFormat.getScaleClassDynamic(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/text_class_dynamic"/>
-        </LinearLayout>
+                tools:text="@string/header_scale_class_dynamic"/>
+        </RelativeLayout>
 
         <ImageButton
             android:id="@+id/btn_menu"
