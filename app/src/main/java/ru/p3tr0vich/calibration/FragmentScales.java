@@ -1,7 +1,9 @@
 package ru.p3tr0vich.calibration;
 
+import android.content.ContentUris;
 import android.content.Context;
 import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -15,8 +17,11 @@ import ru.p3tr0vich.calibration.adapters.ScalesAdapter;
 import ru.p3tr0vich.calibration.helpers.ContentProviderHelper;
 import ru.p3tr0vich.calibration.helpers.DatabaseHelper;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
+import ru.p3tr0vich.calibration.observers.DatabaseObserver;
 import ru.p3tr0vich.calibration.utils.Utils;
 import ru.p3tr0vich.calibration.utils.UtilsLog;
+
+import static ru.p3tr0vich.calibration.helpers.ContentProviderHelper.DATABASE_SCALES_ITEM;
 
 public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         LoaderManager.LoaderCallbacks<Cursor> {
@@ -26,6 +31,8 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
     private static final boolean LOG_ENABLED = true;
 
     private static final int SCALES_CURSOR_LOADER_ID = 0;
+
+    DatabaseObserverScales mDatabaseObserverScales;
 
     @Override
     public int getTitleId() {
@@ -39,7 +46,7 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
 
     @NonNull
     @Override
-    public BaseAdapter createRecyclerViewAdapter(boolean isPhone) {
+    public BaseAdapter<ScaleRecord> createRecyclerViewAdapter(boolean isPhone) {
         return new ScalesAdapter(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -61,6 +68,19 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
                 (savedInstanceState == null ? "=" : "!") + "= null");
 
         getLoaderManager().initLoader(SCALES_CURSOR_LOADER_ID, null, this);
+    }
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        mDatabaseObserverScales = new DatabaseObserverScales();
+        mDatabaseObserverScales.register(getContext());
+    }
+
+    @Override
+    public void onDestroy() {
+        mDatabaseObserverScales.unregister(getContext());
+        super.onDestroy();
     }
 
     @Override
@@ -94,6 +114,13 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         }
     }
 
+    private void updateList(long id) {
+        if (id != -1) {
+            setIdForScroll(id);
+            getLoaderManager().getLoader(SCALES_CURSOR_LOADER_ID).forceLoad();
+        }
+    }
+
     private static class ScalesCursorLoader extends CursorLoader {
 
         ScalesCursorLoader(Context context) {
@@ -110,6 +137,20 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
                 return ContentProviderHelper.getScales(getContext());
             } finally {
                 BroadcastReceiverLoading.send(getContext(), false);
+            }
+        }
+    }
+
+    private class DatabaseObserverScales extends DatabaseObserver {
+
+        @Override
+        public void onChange(@NonNull Uri uri, int uriMatch) {
+            if (LOG_ENABLED)
+                UtilsLog.d(TAG, "DatabaseObserverScales onChange", "uriMatch == " + uriMatch);
+
+            switch (uriMatch) {
+                case DATABASE_SCALES_ITEM:
+                    updateList(ContentUris.parseId(uri));
             }
         }
     }

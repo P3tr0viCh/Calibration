@@ -1,13 +1,16 @@
-package ru.p3tr0vich.calibration;
+package ru.p3tr0vich.calibration.models;
 
 import android.provider.BaseColumns;
 
-public interface Database {
-    int VERSION = 1;
+public interface DatabaseModel {
 
-    String NAME = "calibration.db";
+    interface Database {
+        int VERSION = 1;
 
-    String CREATE_STATEMENT = TableScales.CREATE_STATEMENT;
+        String NAME = "calibration.db";
+
+        String CREATE_STATEMENT = TableScales.CREATE_STATEMENT;
+    }
 
     interface TableScales {
         String NAME = "scales";

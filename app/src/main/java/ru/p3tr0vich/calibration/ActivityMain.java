@@ -22,7 +22,6 @@ import android.view.animation.DecelerateInterpolator;
 
 import ru.p3tr0vich.calibration.factories.FragmentFactory;
 import ru.p3tr0vich.calibration.helpers.FragmentHelper;
-import ru.p3tr0vich.calibration.helpers.PreferencesHelper;
 import ru.p3tr0vich.calibration.utils.Utils;
 import ru.p3tr0vich.calibration.utils.UtilsLog;
 
@@ -41,11 +40,11 @@ public class ActivityMain extends AppCompatActivity implements
     private ActionBarDrawerToggle mDrawerToggle;
     private NavigationView mNavigationView;
 
-    private PreferencesHelper mPreferencesHelper;
+//    private PreferencesHelper mPreferencesHelper;
 
     private FragmentHelper mFragmentHelper;
 
-    @FragmentFactory.IDS.Id
+    @FragmentFactory.Ids.Id
     private int mCurrentFragmentId;
     private int mClickedMenuId = -1;
 
@@ -59,7 +58,7 @@ public class ActivityMain extends AppCompatActivity implements
         initToolbar();
         initDrawer();
 
-        mPreferencesHelper = PreferencesHelper.getInstance(this);
+//        mPreferencesHelper = PreferencesHelper.getInstance(this);
 
         mFragmentHelper = new FragmentHelper(this);
 
@@ -67,7 +66,7 @@ public class ActivityMain extends AppCompatActivity implements
             mFragmentHelper.addMainFragment();
         } else {
             mCurrentFragmentId = FragmentFactory.intToFragmentId(savedInstanceState.getInt(KEY_CURRENT_FRAGMENT_ID));
-            if (mCurrentFragmentId == FragmentFactory.IDS.PREFERENCES) {
+            if (mCurrentFragmentId == FragmentFactory.Ids.PREFERENCES) {
                 FragmentPreferences fragmentPreferences = mFragmentHelper.getFragmentPreferences();
                 if (fragmentPreferences != null)
                     mDrawerToggle.setDrawerIndicatorEnabled(fragmentPreferences.isInRoot());
@@ -91,9 +90,20 @@ public class ActivityMain extends AppCompatActivity implements
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                FragmentCalibrations fragmentCalibrations = mFragmentHelper.getFragmentCalibrations();
-                if (fragmentCalibrations != null && fragmentCalibrations.isVisible())
-                    fragmentCalibrations.setFabVisibleScale(false);
+                // TODO: 23.08.2016 make interface with setFabVisibleScale
+                FragmentInterface fragment = mFragmentHelper.getCurrentFragment();
+                switch (fragment.getFragmentId()) {
+                    case FragmentFactory.Ids.CALIBRATIONS:
+                        ((FragmentCalibrations) fragment).setFabVisibleScale(false);
+                        break;
+                    case FragmentFactory.Ids.SCALES:
+                        ((FragmentScales) fragment).setFabVisibleScale(false);
+                        break;
+                    case FragmentFactory.Ids.ABOUT:
+                    case FragmentFactory.Ids.BAD_ID:
+                    case FragmentFactory.Ids.PREFERENCES:
+                    case FragmentFactory.Ids.SCALE_CHANGE:
+                }
 
                 Utils.hideKeyboard(ActivityMain.this);
             }
@@ -102,9 +112,19 @@ public class ActivityMain extends AppCompatActivity implements
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
 
-                FragmentCalibrations fragmentCalibrations = mFragmentHelper.getFragmentCalibrations();
-                if (fragmentCalibrations != null && fragmentCalibrations.isVisible())
-                    fragmentCalibrations.setFabVisibleScale(true);
+                FragmentInterface fragment = mFragmentHelper.getCurrentFragment();
+                switch (fragment.getFragmentId()) {
+                    case FragmentFactory.Ids.CALIBRATIONS:
+                        ((FragmentCalibrations) fragment).setFabVisibleScale(true);
+                        break;
+                    case FragmentFactory.Ids.SCALES:
+                        ((FragmentScales) fragment).setFabVisibleScale(true);
+                        break;
+                    case FragmentFactory.Ids.ABOUT:
+                    case FragmentFactory.Ids.BAD_ID:
+                    case FragmentFactory.Ids.PREFERENCES:
+                    case FragmentFactory.Ids.SCALE_CHANGE:
+                }
 
                 selectItem(mClickedMenuId);
             }
@@ -121,11 +141,11 @@ public class ActivityMain extends AppCompatActivity implements
         mNavigationView = (NavigationView) findViewById(R.id.drawer_navigation_view);
         mNavigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
-            public boolean onNavigationItemSelected(MenuItem menuItem) {
+            public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
                 mClickedMenuId = menuItem.getItemId();
                 // Если текущий фрагмент -- настройки, может отображаться стрелка влево.
                 // Если нажат другой пункт меню, показывается значок меню.
-                if (mCurrentFragmentId == FragmentFactory.IDS.PREFERENCES &&
+                if (mCurrentFragmentId == FragmentFactory.Ids.PREFERENCES &&
                         mCurrentFragmentId != menuIdToFragmentId(mClickedMenuId))
                     mDrawerToggle.setDrawerIndicatorEnabled(true);
 
@@ -142,34 +162,34 @@ public class ActivityMain extends AppCompatActivity implements
         outState.putInt(KEY_CURRENT_FRAGMENT_ID, mCurrentFragmentId);
     }
 
-    @FragmentFactory.IDS.Id
+    @FragmentFactory.Ids.Id
     private int menuIdToFragmentId(int menuId) {
         switch (menuId) {
             case R.id.action_calibrations:
-                return FragmentFactory.IDS.CALIBRATIONS;
+                return FragmentFactory.Ids.CALIBRATIONS;
             case R.id.action_scales:
-                return FragmentFactory.IDS.SCALES;
+                return FragmentFactory.Ids.SCALES;
             case R.id.action_preferences:
-                return FragmentFactory.IDS.PREFERENCES;
+                return FragmentFactory.Ids.PREFERENCES;
             case R.id.action_about:
-                return FragmentFactory.IDS.ABOUT;
+                return FragmentFactory.Ids.ABOUT;
             default:
                 throw new IllegalArgumentException("Bad menu id == " + menuId);
         }
     }
 
-    private int fragmentIdToMenuId(@FragmentFactory.IDS.Id int fragmentId) {
+    private int fragmentIdToMenuId(@FragmentFactory.Ids.Id int fragmentId) {
         switch (fragmentId) {
-            case FragmentFactory.IDS.CALIBRATIONS:
+            case FragmentFactory.Ids.CALIBRATIONS:
                 return R.id.action_calibrations;
-            case FragmentFactory.IDS.SCALES:
+            case FragmentFactory.Ids.SCALES:
                 return R.id.action_scales;
-            case FragmentFactory.IDS.PREFERENCES:
+            case FragmentFactory.Ids.PREFERENCES:
                 return R.id.action_preferences;
-            case FragmentFactory.IDS.ABOUT:
+            case FragmentFactory.Ids.ABOUT:
                 return R.id.action_about;
-            case FragmentFactory.IDS.SCALE_CHANGE:
-            case FragmentFactory.IDS.BAD_ID:
+            case FragmentFactory.Ids.SCALE_CHANGE:
+            case FragmentFactory.Ids.BAD_ID:
             default:
                 return -1;
         }
@@ -183,7 +203,7 @@ public class ActivityMain extends AppCompatActivity implements
         int fragmentId = menuIdToFragmentId(menuId);
 
         if (mCurrentFragmentId == fragmentId) {
-            if (mCurrentFragmentId == FragmentFactory.IDS.PREFERENCES) {
+            if (mCurrentFragmentId == FragmentFactory.Ids.PREFERENCES) {
                 FragmentPreferences fragmentPreferences = mFragmentHelper.getFragmentPreferences();
                 if (fragmentPreferences != null) {
                     fragmentPreferences.goToRootScreen();
@@ -194,12 +214,12 @@ public class ActivityMain extends AppCompatActivity implements
 
         FragmentManager fragmentManager = getSupportFragmentManager();
 
-        Fragment fragmentMain = mFragmentHelper.getFragment(FragmentFactory.MAIN_FRAGMENT.TAG);
+        Fragment fragmentMain = mFragmentHelper.getFragment(FragmentFactory.MainFragment.ID);
 
         if (fragmentMain != null)
             if (!fragmentMain.isVisible()) fragmentManager.popBackStack();
 
-        if (fragmentId == FragmentFactory.MAIN_FRAGMENT.ID) return;
+        if (fragmentId == FragmentFactory.MainFragment.ID) return;
 
         mFragmentHelper.replaceFragment(fragmentId);
     }

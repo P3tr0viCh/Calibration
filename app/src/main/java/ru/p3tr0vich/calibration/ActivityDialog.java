@@ -67,7 +67,7 @@ public class ActivityDialog extends AppCompatActivity implements
 
             switch (getIntent().getIntExtra(EXTRA_DIALOG, -1)) {
                 case DIALOG_SCALE_CHANGE:
-                    fragment = FragmentFactory.getFragmentNewInstance(FragmentFactory.IDS.SCALE_CHANGE,
+                    fragment = FragmentFactory.getFragmentNewInstance(FragmentFactory.Ids.SCALE_CHANGE,
                             getIntent().getBundleExtra(EXTRA_ARGS));
                     break;
                 default:

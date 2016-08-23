@@ -49,12 +49,14 @@ public class ContentProviderHelper extends ContentProvider {
         private static final String PREFERENCES_ITEM = PREFERENCES + "/*";
     }
 
+    public static final Uri URI_DATABASE = BaseUri.getUri(UriPath.DATABASE);
     public static final Uri URI_DATABASE_SCALES = BaseUri.getUri(UriPath.DATABASE_SCALES);
 
     public static final Uri URI_PREFERENCES = BaseUri.getUri(UriPath.PREFERENCES);
 
-    public static final int DATABASE_SCALES = 10;
-    public static final int DATABASE_SCALES_ITEM = 11;
+    public static final int DATABASE = 10;
+    public static final int DATABASE_SCALES = 11;
+    public static final int DATABASE_SCALES_ITEM = 12;
 
     private static final int PREFERENCES = 20;
     private static final int PREFERENCES_ITEM = 21;
@@ -62,6 +64,7 @@ public class ContentProviderHelper extends ContentProvider {
     private static final UriMatcher sURIMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
     static {
+        sURIMatcher.addURI(BaseUri.AUTHORITY, UriPath.DATABASE, DATABASE);
         sURIMatcher.addURI(BaseUri.AUTHORITY, UriPath.DATABASE_SCALES, DATABASE_SCALES);
         sURIMatcher.addURI(BaseUri.AUTHORITY, UriPath.DATABASE_SCALES_ITEM, DATABASE_SCALES_ITEM);
 
@@ -105,6 +108,7 @@ public class ContentProviderHelper extends ContentProvider {
     @Override
     public String getType(@NonNull Uri uri) {
         switch (sURIMatcher.match(uri)) {
+            case DATABASE:
             case DATABASE_SCALES:
                 return CURSOR_DIR_BASE_TYPE_DATABASE;
             case DATABASE_SCALES_ITEM:

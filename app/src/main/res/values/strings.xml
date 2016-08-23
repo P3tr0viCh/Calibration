@@ -77,7 +77,4 @@
     <string name="message_error_delete_record">Во время удаления записи произошла ошибка</string>
 
     <string name="sync_authority" translatable="false">ru.p3tr0vich.calibration.provider</string>
-
-    <string name="exception_fragment_no_id" translatable="false">Fragment must have ID</string>
-    <string name="exception_fragment_bad_id" translatable="false">Fragment bad ID</string>
 </resources>

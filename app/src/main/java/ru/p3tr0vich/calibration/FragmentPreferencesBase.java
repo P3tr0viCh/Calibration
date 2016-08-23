@@ -9,14 +9,14 @@ import android.view.View;
 import ru.p3tr0vich.calibration.factories.FragmentFactory;
 import ru.p3tr0vich.calibration.helpers.PreferencesHelper;
 
-import static ru.p3tr0vich.calibration.factories.FragmentFactory.IDS.BAD_ID;
+import static ru.p3tr0vich.calibration.factories.FragmentFactory.Ids.BAD_ID;
 
 public abstract class FragmentPreferencesBase extends PreferenceFragmentCompat
         implements FragmentInterface {
 
     private static final String KEY_ID = "FRAGMENT_BASE_KEY_ID";
 
-    @FragmentFactory.IDS.Id
+    @FragmentFactory.Ids.Id
     private int mFragmentId = BAD_ID;
 
     private OnFragmentChangeListener mOnFragmentChangeListener;
@@ -33,7 +33,7 @@ public abstract class FragmentPreferencesBase extends PreferenceFragmentCompat
             mFragmentId = FragmentFactory.intToFragmentId(getArguments().getInt(KEY_ID, BAD_ID));
 
         if (mFragmentId == BAD_ID)
-            throw new IllegalArgumentException(getString(R.string.exception_fragment_no_id));
+            throw new IllegalArgumentException("Fragment must have ID");
     }
 
     @Override

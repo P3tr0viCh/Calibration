@@ -9,18 +9,16 @@ import android.support.v4.app.Fragment;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
-import ru.p3tr0vich.calibration.ApplicationCalibration;
 import ru.p3tr0vich.calibration.FragmentAbout;
 import ru.p3tr0vich.calibration.FragmentActivityDialogScaleChange;
 import ru.p3tr0vich.calibration.FragmentBase;
 import ru.p3tr0vich.calibration.FragmentCalibrations;
 import ru.p3tr0vich.calibration.FragmentPreferences;
 import ru.p3tr0vich.calibration.FragmentScales;
-import ru.p3tr0vich.calibration.R;
 
 public class FragmentFactory {
 
-    public static final class IDS {
+    public interface Ids {
 
         @Retention(RetentionPolicy.SOURCE)
         @IntDef({BAD_ID,
@@ -29,94 +27,88 @@ public class FragmentFactory {
                 PREFERENCES,
                 ABOUT,
                 SCALE_CHANGE})
-        public @interface Id {
+        @interface Id {
         }
 
-        public static final int BAD_ID = -1;
-        public static final int CALIBRATIONS = 10;
-        public static final int SCALES = 11;
-        public static final int PREFERENCES = 12;
-        public static final int ABOUT = 13;
+        int BAD_ID = -1;
+        int CALIBRATIONS = 10;
+        int SCALES = 11;
+        int PREFERENCES = 12;
+        int ABOUT = 13;
 
-        public static final int SCALE_CHANGE = 20;
-
-        private IDS() {
-        }
+        int SCALE_CHANGE = 20;
     }
 
-    public static final class TAGS {
-        public static final String CALIBRATIONS = FragmentCalibrations.class.getSimpleName();
-        public static final String SCALES = FragmentScales.class.getSimpleName();
-        public static final String PREFERENCES = FragmentPreferences.class.getSimpleName();
-        public static final String ABOUT = FragmentAbout.class.getSimpleName();
-        public static final String SCALE_CHANGE = FragmentActivityDialogScaleChange.class.getSimpleName();
-
-        private TAGS() {
-        }
+    private interface Tags {
+        String CALIBRATIONS = FragmentCalibrations.class.getSimpleName();
+        String SCALES = FragmentScales.class.getSimpleName();
+        String PREFERENCES = FragmentPreferences.class.getSimpleName();
+        String ABOUT = FragmentAbout.class.getSimpleName();
+        String SCALE_CHANGE = FragmentActivityDialogScaleChange.class.getSimpleName();
     }
 
-    public static final class MAIN_FRAGMENT {
-        public static final int ID = IDS.SCALES;
-        public static final String TAG = TAGS.SCALES;
+    public interface MainFragment{
+        int ID = Ids.SCALES;
+        String TAG = Tags.SCALES;
     }
 
     private FragmentFactory() {
     }
 
     @NonNull
-    public static Fragment getFragmentNewInstance(@IDS.Id int fragmentId, @Nullable Bundle args) {
+    public static Fragment getFragmentNewInstance(@Ids.Id int fragmentId, @Nullable Bundle args) {
         Fragment fragment;
 
         switch (fragmentId) {
-            case IDS.CALIBRATIONS:
+            case Ids.CALIBRATIONS:
                 fragment = new FragmentCalibrations();
                 break;
-            case IDS.SCALES:
+            case Ids.SCALES:
                 fragment = new FragmentScales();
                 break;
-            case IDS.PREFERENCES:
+            case Ids.PREFERENCES:
                 fragment = new FragmentPreferences();
                 break;
-            case IDS.ABOUT:
+            case Ids.ABOUT:
                 fragment = new FragmentAbout();
                 break;
-            case IDS.SCALE_CHANGE:
+            case Ids.SCALE_CHANGE:
                 fragment = new FragmentActivityDialogScaleChange();
                 break;
-            case IDS.BAD_ID:
+            case Ids.BAD_ID:
             default:
-                throw new IllegalArgumentException(ApplicationCalibration.getContext().getString(R.string.exception_fragment_bad_id));
+                throw new IllegalArgumentException("Fragment bad ID");
         }
 
         return FragmentBase.newInstance(fragmentId, fragment, args);
     }
 
     @NonNull
-    public static Fragment getFragmentNewInstance(@IDS.Id int fragmentId) {
+    public static Fragment getFragmentNewInstance(@Ids.Id int fragmentId) {
         return getFragmentNewInstance(fragmentId, null);
     }
 
-    @IDS.Id
+    @Ids.Id
     public static int intToFragmentId(int id) {
         return id;
     }
 
     @NonNull
-    public static String fragmentIdToTag(@IDS.Id int id) {
+    public static String fragmentIdToTag(@Ids.Id int id) {
         switch (id) {
-            case IDS.CALIBRATIONS:
-                return TAGS.CALIBRATIONS;
-            case IDS.SCALES:
-                return TAGS.SCALES;
-            case IDS.PREFERENCES:
-                return TAGS.PREFERENCES;
-            case IDS.ABOUT:
-                return TAGS.ABOUT;
-            case IDS.SCALE_CHANGE:
-                return TAGS.SCALE_CHANGE;
-            case IDS.BAD_ID:
+            case Ids.CALIBRATIONS:
+                return Tags.CALIBRATIONS;
+            case Ids.SCALES:
+                return Tags.SCALES;
+            case Ids.PREFERENCES:
+                return Tags.PREFERENCES;
+            case Ids.ABOUT:
+                return Tags.ABOUT;
+            case Ids.SCALE_CHANGE:
+                return Tags.SCALE_CHANGE;
+            case Ids.BAD_ID:
             default:
-                throw new IllegalArgumentException(ApplicationCalibration.getContext().getString(R.string.exception_fragment_bad_id));
+                throw new IllegalArgumentException("Fragment bad ID");
         }
     }
 }

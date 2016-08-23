@@ -28,30 +28,31 @@ public class FragmentHelper {
     }
 
     @Nullable
-    public Fragment getFragment(@NonNull String fragmentTag) {
-        return mFragmentActivity.getSupportFragmentManager().findFragmentByTag(fragmentTag);
+    public Fragment getFragment(@FragmentFactory.Ids.Id int fragmentId) {
+        return mFragmentActivity.getSupportFragmentManager().findFragmentByTag(
+                FragmentFactory.fragmentIdToTag(fragmentId));
     }
 
     @Nullable
     public FragmentCalibrations getFragmentCalibrations() {
-        return (FragmentCalibrations) getFragment(FragmentFactory.TAGS.CALIBRATIONS);
+        return (FragmentCalibrations) getFragment(FragmentFactory.Ids.CALIBRATIONS);
     }
 
     @Nullable
     public FragmentPreferences getFragmentPreferences() {
-        return (FragmentPreferences) getFragment(FragmentFactory.TAGS.PREFERENCES);
+        return (FragmentPreferences) getFragment(FragmentFactory.Ids.PREFERENCES);
     }
 
     public void addMainFragment() {
         mFragmentActivity.getSupportFragmentManager().beginTransaction()
                 .add(R.id.content_frame,
-                        FragmentFactory.getFragmentNewInstance(FragmentFactory.MAIN_FRAGMENT.ID),
-                        FragmentFactory.MAIN_FRAGMENT.TAG)
+                        FragmentFactory.getFragmentNewInstance(FragmentFactory.MainFragment.ID),
+                        FragmentFactory.MainFragment.TAG)
                 .setTransition(FragmentTransaction.TRANSIT_NONE)
                 .commit();
     }
 
-    public void replaceFragment(@FragmentFactory.IDS.Id int fragmentId) {
+    public void replaceFragment(@FragmentFactory.Ids.Id int fragmentId) {
         mFragmentActivity.getSupportFragmentManager().beginTransaction()
                 .replace(R.id.content_frame,
                         FragmentFactory.getFragmentNewInstance(fragmentId),

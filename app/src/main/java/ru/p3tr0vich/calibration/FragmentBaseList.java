@@ -89,7 +89,7 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     public abstract void onFloatingActionButtonClick();
 
     @NonNull
-    public abstract BaseAdapter createRecyclerViewAdapter(boolean isPhone);
+    public abstract BaseAdapter<T> createRecyclerViewAdapter(boolean isPhone);
 
     public void onRecyclerViewScrollUp() {
         setFabVisibleTranslate(false);
@@ -274,6 +274,10 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
         if (isItemVisible(position)) return;
 
         getRecyclerViewLayoutManager().scrollToPositionWithOffset(position, 0);
+    }
+
+    public void setIdForScroll(long idForScroll) {
+        mIdForScroll = idForScroll;
     }
 
     public void swapRecords(@Nullable List<T> records) {

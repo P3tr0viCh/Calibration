@@ -13,13 +13,13 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import ru.p3tr0vich.calibration.Database;
+import ru.p3tr0vich.calibration.models.DatabaseModel;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
 import ru.p3tr0vich.calibration.utils.UtilsLog;
 
 @SuppressWarnings("TryFinallyCanBeTryWithResources")
 // Try-with-resources requires API level 19 (current min is 17)
-public class DatabaseHelper extends SQLiteOpenHelper implements Database {
+public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
 
     private static final String TAG = "DatabaseHelper";
 

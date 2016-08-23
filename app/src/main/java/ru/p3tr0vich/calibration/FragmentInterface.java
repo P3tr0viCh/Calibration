@@ -7,7 +7,7 @@ import ru.p3tr0vich.calibration.factories.FragmentFactory;
 
 public interface FragmentInterface {
 
-    @FragmentFactory.IDS.Id
+    @FragmentFactory.Ids.Id
     int getFragmentId();
 
     @SuppressWarnings("unused")
