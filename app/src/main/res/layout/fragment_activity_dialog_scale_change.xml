@@ -81,9 +81,6 @@
                 <Spinner
                     android:id="@+id/spinner_class_static"
                     style="@style/AppTheme.Spinner.Underlined"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="112dp"
                     android:paddingTop="8dp"/>
             </LinearLayout>
 
@@ -102,9 +99,6 @@
                 <Spinner
                     android:id="@+id/spinner_class_dynamic"
                     style="@style/AppTheme.Spinner.Underlined"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:minWidth="112dp"
                     android:paddingTop="8dp"/>
             </LinearLayout>
         </LinearLayout>

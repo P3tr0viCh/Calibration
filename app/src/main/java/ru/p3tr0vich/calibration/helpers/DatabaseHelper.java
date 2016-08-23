@@ -13,76 +13,18 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import ru.p3tr0vich.calibration.Database;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
 import ru.p3tr0vich.calibration.utils.UtilsLog;
 
 @SuppressWarnings("TryFinallyCanBeTryWithResources")
 // Try-with-resources requires API level 19 (current min is 17)
-public class DatabaseHelper extends SQLiteOpenHelper {
+public class DatabaseHelper extends SQLiteOpenHelper implements Database {
 
     private static final String TAG = "DatabaseHelper";
 
     private static final boolean LOG_ENABLED = false;
 
-    public static class TableScales {
-
-        private TableScales() {
-        }
-
-        public static final String NAME = "scales";
-
-        public static final class Columns implements BaseColumns {
-            public static final String NAME = "name";
-            public static final String TYPE = "type";
-            public static final String CLASS_STATIC = "class_static";
-            public static final String CLASS_DYNAMIC = "class_dynamic";
-
-            private static final String[] ALL = new String[]{
-                    _ID, NAME, TYPE, CLASS_STATIC, CLASS_DYNAMIC
-            };
-
-            private static final int _ID_INDEX = 0;
-            private static final int NAME_INDEX = 1;
-            private static final int TYPE_INDEX = 2;
-            private static final int CLASS_STATIC_INDEX = 3;
-            private static final int CLASS_DYNAMIC_INDEX = 4;
-        }
-
-        private static final String CREATE_STATEMENT = "CREATE TABLE " + NAME + "(" +
-                Columns._ID + " INTEGER PRIMARY KEY ON CONFLICT REPLACE, " +
-                Columns.NAME + " TEXT, " +
-                Columns.TYPE + " TEXT, " +
-                Columns.CLASS_STATIC + " INTEGER DEFAULT 0, " +
-                Columns.CLASS_DYNAMIC + " INTEGER DEFAULT 0" +
-                ");";
-    }
-
-    private static class Database {
-        private static final int VERSION = 1;
-
-        private static final String NAME = "calibration.db";
-
-        private static final String CREATE_STATEMENT = TableScales.CREATE_STATEMENT;
-
-        private Database() {
-        }
-    }
-
-    private static final String AND = " AND ";
-    private static final String AS = " AS ";
-    private static final String DESC = " DESC";
-
-    private static final String EQUAL = "=";
-    private static final int TRUE = 1;
-    private static final int FALSE = 0;
-
-    public static class Where {
-        private static final String BETWEEN = " BETWEEN %1$d AND %2$d";
-        private static final String LESS_OR_EQUAL = " <= %d";
-
-        private Where() {
-        }
-    }
 
 //    public static class Filter {
 //
@@ -155,7 +97,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @SuppressWarnings("SameParameterValue")
     public static boolean getBoolean(@NonNull Cursor cursor, int columnIndex) {
-        return cursor.getInt(columnIndex) == TRUE;
+        return cursor.getInt(columnIndex) == Statement.TRUE;
     }
 
     @Override
@@ -169,23 +111,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (LOG_ENABLED)
             UtilsLog.d(TAG, "onUpgrade");
-    }
-
-    @NonNull
-    public static ContentValues getScaleValues(long id,
-                                               String name,
-                                               String type,
-                                               int classStatic,
-                                               int classDynamic) {
-        ContentValues values = new ContentValues();
-
-        values.put(TableScales.Columns._ID, id);
-        values.put(TableScales.Columns.NAME, name);
-        values.put(TableScales.Columns.TYPE, type);
-        values.put(TableScales.Columns.CLASS_STATIC, classStatic);
-        values.put(TableScales.Columns.CLASS_DYNAMIC, classDynamic);
-
-        return values;
     }
 
     @NonNull
@@ -219,27 +144,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public Cursor getScale(long id) {
-        return query(TableScales.NAME, TableScales.Columns.ALL, TableScales.Columns._ID + EQUAL + id, null, null);
+        return query(TableScales.NAME, TableScales.Columns.ALL, TableScales.Columns._ID + Statement.EQUAL + id, null, null);
     }
-
-//    public Cursor getAll(String selection) {
-//        return query(TableFueling.COLUMNS, selection, null, TableFueling.DATETIME + DESC);
-//    }
-
-//    public Cursor getRecord(long id) {
-//        return query(TableFueling.COLUMNS, TableFueling._ID + EQUAL + id, null, null);
-//    }
-
-//    public int deleteMarkedAsDeleted() {
-//        return delete(TableFueling.DELETED + EQUAL + TRUE);
-//    }
-
-//    public int updateChanged() {
-//        ContentValues values = new ContentValues();
-//        values.put(TableFueling.CHANGED, FALSE);
-//
-//        return update(values, TableFueling.CHANGED + EQUAL + TRUE);
-//    }
 
     private Cursor query(String table, String[] columns, String selection, String groupBy, String orderBy, String limit) {
         if (LOG_ENABLED)
@@ -281,7 +187,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int update(@NonNull String table, @NonNull ContentValues values, long id) {
-        return update(table, values, BaseColumns._ID + EQUAL + id);
+        return update(table, values, BaseColumns._ID + Statement.EQUAL + id);
     }
 
     private int delete(@NonNull SQLiteDatabase db, @NonNull String table, @Nullable String whereClause) {
@@ -293,6 +199,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     public int delete(@NonNull String table, long id) {
-        return delete(table, BaseColumns._ID + EQUAL + id);
+        return delete(table, BaseColumns._ID + Statement.EQUAL + id);
     }
 }
