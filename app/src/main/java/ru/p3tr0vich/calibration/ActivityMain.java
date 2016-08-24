@@ -81,6 +81,14 @@ public class ActivityMain extends AppCompatActivity implements
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    private void setFloatingActionButtonVisible(boolean visible) {
+        FragmentInterface fragment = mFragmentHelper.getCurrentFragment();
+
+        if (fragment instanceof FragmentBaseList)
+            ((FragmentBaseList) fragment).setFloatingActionButtonVisible(visible,
+                    FragmentBaseList.FloatingActionButtonSetVisibility.SCALE);
+    }
+
     private void initDrawer() {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this,
@@ -90,20 +98,7 @@ public class ActivityMain extends AppCompatActivity implements
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
 
-                // TODO: 23.08.2016 make interface with setFabVisibleScale
-                FragmentInterface fragment = mFragmentHelper.getCurrentFragment();
-                switch (fragment.getFragmentId()) {
-                    case FragmentFactory.Ids.CALIBRATIONS:
-                        ((FragmentCalibrations) fragment).setFabVisibleScale(false);
-                        break;
-                    case FragmentFactory.Ids.SCALES:
-                        ((FragmentScales) fragment).setFabVisibleScale(false);
-                        break;
-                    case FragmentFactory.Ids.ABOUT:
-                    case FragmentFactory.Ids.BAD_ID:
-                    case FragmentFactory.Ids.PREFERENCES:
-                    case FragmentFactory.Ids.SCALE_CHANGE:
-                }
+                setFloatingActionButtonVisible(false);
 
                 Utils.hideKeyboard(ActivityMain.this);
             }
@@ -112,19 +107,7 @@ public class ActivityMain extends AppCompatActivity implements
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
 
-                FragmentInterface fragment = mFragmentHelper.getCurrentFragment();
-                switch (fragment.getFragmentId()) {
-                    case FragmentFactory.Ids.CALIBRATIONS:
-                        ((FragmentCalibrations) fragment).setFabVisibleScale(true);
-                        break;
-                    case FragmentFactory.Ids.SCALES:
-                        ((FragmentScales) fragment).setFabVisibleScale(true);
-                        break;
-                    case FragmentFactory.Ids.ABOUT:
-                    case FragmentFactory.Ids.BAD_ID:
-                    case FragmentFactory.Ids.PREFERENCES:
-                    case FragmentFactory.Ids.SCALE_CHANGE:
-                }
+                setFloatingActionButtonVisible(true);
 
                 selectItem(mClickedMenuId);
             }

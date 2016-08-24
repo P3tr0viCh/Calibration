@@ -3,6 +3,7 @@ package ru.p3tr0vich.calibration;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.pnikosis.materialishprogress.ProgressWheel;
 
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 import java.util.List;
 
 import ru.p3tr0vich.calibration.adapters.BaseAdapter;
@@ -51,7 +54,7 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
             // Workaround for bug
 
             if (event == DISMISS_EVENT_SWIPE)
-                setFabVisibleTranslate(true);
+                setFloatingActionButtonVisibleTranslate(true);
         }
     };
 
@@ -73,6 +76,18 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
 
     private AnimationDuration mAnimationDuration;
 
+    public interface FloatingActionButtonSetVisibility {
+
+        @Retention(RetentionPolicy.SOURCE)
+        @IntDef({SCALE,
+                TRANSLATE})
+        @interface Method {
+        }
+
+        int SCALE = 0;
+        int TRANSLATE = 1;
+    }
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,11 +107,11 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     public abstract BaseAdapter<T> createRecyclerViewAdapter(boolean isPhone);
 
     public void onRecyclerViewScrollUp() {
-        setFabVisibleTranslate(false);
+        setFloatingActionButtonVisibleTranslate(false);
     }
 
     public void onRecyclerViewScrollDown() {
-        setFabVisibleTranslate(true);
+        setFloatingActionButtonVisibleTranslate(true);
     }
 
     @Override
@@ -182,56 +197,37 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     @Override
     public void onResume() {
         super.onResume();
-        setFabVisibleScale(true);
+        setFloatingActionButtonVisibleScale(true);
     }
 
     @Override
     public void onPause() {
-        setFabVisibleScale(false);
+        setFloatingActionButtonVisibleScale(false);
         super.onPause();
     }
 
-    public void setFabVisibleScale(boolean visible) {
-        final float value = visible ? 1.0f : 0.0f;
+    private void setFloatingActionButtonVisibleScale(boolean visible) {
+        float value = visible ? 1.0f : 0.0f;
         mFloatingActionButton.animate()
                 .setStartDelay(mAnimationDuration.startDelayFab).scaleX(value).scaleY(value);
     }
 
-    private void setFabVisibleTranslate(final boolean visible) {
-        final float value = visible ? 0.0f : mFloatingActionButton.getHeight();
+    private void setFloatingActionButtonVisibleTranslate(boolean visible) {
+        float value = visible ? 0.0f : mFloatingActionButton.getHeight();
         mFloatingActionButton.animate().translationY(value);
+    }
 
-//        if (mFloatingActionButton.getVisibility() == View.VISIBLE && visible) return;
-//
-//        ValueAnimator valueAnimator = ValueAnimator.ofInt(
-//                (int) mFloatingActionButton.getTranslationY(),
-//                visible ? 0 : mFloatingActionButton.getHeight());
-//        valueAnimator
-//                .setDuration(visible ?
-//                        mAnimationDuration.translateFabShow:
-//                        mAnimationDuration.translateFabHide)
-//                .addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
-//                    int translationY;
-//
-//                    public void onAnimationUpdate(ValueAnimator animation) {
-//                        translationY = (int) animation.getAnimatedValue();
-//
-//                        mFloatingActionButton.setTranslationY(translationY);
-//                    }
-//                });
-//        valueAnimator.addListener(new AnimatorListenerAdapter() {
-//            @Override
-//            public void onAnimationEnd(Animator animation) {
-//                if (!visible) mFloatingActionButton.setVisibility(View.GONE);
-//            }
-//
-//            @Override
-//            public void onAnimationStart(Animator animation) {
-//                if (visible) mFloatingActionButton.setVisibility(View.VISIBLE);
-//            }
-//        });
-//
-//        valueAnimator.start();
+    public void setFloatingActionButtonVisible(boolean visible, @FloatingActionButtonSetVisibility.Method int method) {
+        switch (method) {
+            case FloatingActionButtonSetVisibility.SCALE:
+                setFloatingActionButtonVisibleScale(visible);
+                break;
+            case FloatingActionButtonSetVisibility.TRANSLATE:
+                setFloatingActionButtonVisibleTranslate(visible);
+                break;
+            default:
+                throw new IllegalArgumentException("Wrong method");
+        }
     }
 
     public void setLoading(boolean loading) {
@@ -268,7 +264,7 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     private void scrollToPosition(int position) {
         if (position < 0) return;
 
-        if (mRecyclerViewAdapter.isShowHeader() && position == BaseAdapter.HEADER_POSITION + 1)
+        if (mRecyclerViewAdapter.hasHeader() && position == BaseAdapter.HEADER_POSITION + 1)
             position = BaseAdapter.HEADER_POSITION;
 
         if (isItemVisible(position)) return;

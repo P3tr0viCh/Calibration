@@ -10,7 +10,7 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
-import android.view.View;
+import android.view.MenuItem;
 
 import ru.p3tr0vich.calibration.adapters.BaseAdapter;
 import ru.p3tr0vich.calibration.adapters.ScalesAdapter;
@@ -18,12 +18,14 @@ import ru.p3tr0vich.calibration.helpers.ContentProviderHelper;
 import ru.p3tr0vich.calibration.helpers.DatabaseHelper;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
 import ru.p3tr0vich.calibration.observers.DatabaseObserver;
+import ru.p3tr0vich.calibration.presenters.PopupMenuPresenter;
 import ru.p3tr0vich.calibration.utils.Utils;
 import ru.p3tr0vich.calibration.utils.UtilsLog;
 
 import static ru.p3tr0vich.calibration.helpers.ContentProviderHelper.DATABASE_SCALES_ITEM;
 
 public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
+        PopupMenuPresenter.OnMenuItemClickListener<ScaleRecord>,
         LoaderManager.LoaderCallbacks<Cursor> {
 
     private static final String TAG = "FragmentScales";
@@ -47,17 +49,52 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
     @NonNull
     @Override
     public BaseAdapter<ScaleRecord> createRecyclerViewAdapter(boolean isPhone) {
-        return new ScalesAdapter(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Utils.toast(TAG + ": btn");
-            }
-        }, isPhone, !isPhone);
+        return new ScalesAdapter(this,
+                isPhone ? R.layout.partial_scales_recycler_view_header : 0,
+                isPhone ? 0 : R.layout.partial_scales_recycler_view_footer);
     }
 
     @Override
     public void onFloatingActionButtonClick() {
         ActivityDialog.start(getActivity(), ActivityDialog.DIALOG_SCALE_CHANGE, null);
+    }
+
+    private boolean deleteRecord(@NonNull ScaleRecord record) {
+        if (ContentProviderHelper.deleteRecord(getContext(), record))
+            return true;
+        else {
+            Utils.toast(R.string.message_error_delete_record);
+            return false;
+        }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item, @Nullable ScaleRecord record) {
+        if (record == null) return false;
+
+        switch (item.getItemId()) {
+            case R.id.action_fueling_update:
+                ActivityDialog.start(getActivity(), ActivityDialog.DIALOG_SCALE_CHANGE, record.putToBundle());
+
+                return true;
+            case R.id.action_fueling_delete:
+                deleteRecord(record);
+
+//                mDeletedFuelingRecord = fuelingRecord;
+//
+//                if (markRecordAsDeleted(fuelingRecord)) {
+//                    mSnackbar = Snackbar
+//                            .make(mLayoutMain, R.string.message_record_deleted,
+//                                    Snackbar.LENGTH_LONG)
+//                            .setAction(R.string.dialog_btn_cancel, mUndoClickListener)
+//                            .setCallback(mSnackBarCallback);
+//                    mSnackbar.show();
+//                }
+
+                return true;
+            default:
+                return false;
+        }
     }
 
     @Override

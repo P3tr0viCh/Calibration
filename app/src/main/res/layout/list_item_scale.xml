@@ -6,6 +6,10 @@
         <import type="ru.p3tr0vich.calibration.utils.UtilsRecordFormat"/>
 
         <variable
+            name="popupMenuPresenter"
+            type="ru.p3tr0vich.calibration.presenters.PopupMenuPresenter"/>
+
+        <variable
             name="scaleRecord"
             type="ru.p3tr0vich.calibration.models.ScaleRecord"/>
     </data>
@@ -32,46 +36,36 @@
             android:textAppearance="@style/AppTheme.TextAppearance.List"
             tools:text="@string/header_scale_name_and_id"/>
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="34dp"
             android:layout_alignParentBottom="true"
             android:layout_alignParentStart="true"
             android:layout_marginStart="16dp"
             android:layout_toStartOf="@+id/btn_menu"
-            android:gravity="top">
+            android:gravity="top"
+            android:orientation="horizontal">
 
             <TextView
                 android:id="@+id/text_type"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
-                android:layout_alignParentStart="true"
-                android:layout_toStartOf="@+id/text_class_static"
+                android:layout_weight="1"
                 android:gravity="top"
                 android:text="@{UtilsRecordFormat.getScaleType(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
                 tools:text="@string/header_scale_type"/>
 
             <TextView
-                android:id="@+id/text_class_static"
-                android:layout_width="70dp"
+                android:id="@+id/text_class"
+                android:layout_width="100dp"
                 android:layout_height="match_parent"
-                android:layout_toStartOf="@+id/text_class_dynamic"
+                android:layout_weight="0"
                 android:gravity="top"
-                android:text="@{UtilsRecordFormat.getScaleClassStatic(context, scaleRecord)}"
+                android:text="@{UtilsRecordFormat.getScaleClass(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/header_scale_class_static"/>
-
-            <TextView
-                android:id="@+id/text_class_dynamic"
-                android:layout_width="70dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:gravity="top|center_horizontal"
-                android:text="@{UtilsRecordFormat.getScaleClassDynamic(context, scaleRecord)}"
-                android:textAppearance="@style/AppTheme.TextAppearance.List"
-                tools:text="@string/header_scale_class_dynamic"/>
-        </RelativeLayout>
+                tools:text="@string/header_scale_class"/>
+        </LinearLayout>
 
         <ImageButton
             android:id="@+id/btn_menu"
@@ -84,6 +78,7 @@
             android:adjustViewBounds="false"
             android:background="?attr/selectableItemBackground"
             android:clickable="true"
+            android:onClick="@{(view) -> popupMenuPresenter.onClick(context, view, scaleRecord)}"
             android:src="@drawable/ic_dots_vertical"
             tools:ignore="ContentDescription"/>
     </RelativeLayout>

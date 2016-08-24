@@ -13,14 +13,9 @@ import java.lang.annotation.RetentionPolicy;
 
 import ru.p3tr0vich.calibration.helpers.DatabaseHelper;
 
-public class ScaleRecord implements BaseRecord, Parcelable {
+public class ScaleRecord extends BaseRecord implements Parcelable {
 
     public static final String NAME = "SCALE_RECORD";
-
-    /**
-     * Номер весовой. Ключевое поле.
-     */
-    private long mId;
 
     /**
      * Название весовой.
@@ -80,6 +75,7 @@ public class ScaleRecord implements BaseRecord, Parcelable {
      * Низкий класс точности в статике.
      */
     public static final int CLASS_STATIC_LOW = 3;
+
     /**
      * Класс точности весов в динамике.
      *
@@ -113,8 +109,8 @@ public class ScaleRecord implements BaseRecord, Parcelable {
      */
     public static final int CLASS_DYNAMIC_2 = 3;
 
-    public ScaleRecord(long id, String name, String type, @ClassStatic int classStatic,
-                       @ClassDynamic int classDynamic) {
+    public ScaleRecord(long id, @Nullable String name, @Nullable String type,
+                       @ClassStatic int classStatic, @ClassDynamic int classDynamic) {
         setId(id);
         setName(name);
         setType(type);
@@ -130,11 +126,11 @@ public class ScaleRecord implements BaseRecord, Parcelable {
         this();
 
         if (record != null) {
-            mId = record.mId;
-            mName = record.mName;
-            mType = record.mType;
-            mClassStatic = record.mClassStatic;
-            mClassDynamic = record.mClassDynamic;
+            setId(record.getId());
+            setName(record.getName());
+            setType(record.getType());
+            setClassStatic(record.getClassStatic());
+            setClassDynamic(record.getClassDynamic());
         }
     }
 
@@ -142,20 +138,12 @@ public class ScaleRecord implements BaseRecord, Parcelable {
         this((ScaleRecord) bundle.getParcelable(NAME));
     }
 
-    @Override
-    public long getId() {
-        return mId;
-    }
-
-    public void setId(long id) {
-        mId = id;
-    }
-
+    @Nullable
     public String getType() {
         return mType;
     }
 
-    public void setType(String type) {
+    public void setType(@Nullable String type) {
         mType = type;
     }
 
@@ -177,11 +165,12 @@ public class ScaleRecord implements BaseRecord, Parcelable {
         mClassDynamic = classDynamic;
     }
 
+    @Nullable
     public String getName() {
         return mName;
     }
 
-    public void setName(String name) {
+    public void setName(@Nullable String name) {
         mName = name;
     }
 
@@ -201,7 +190,7 @@ public class ScaleRecord implements BaseRecord, Parcelable {
     public ContentValues getContentValues() {
         ContentValues values = new ContentValues();
 
-        values.put(DatabaseHelper.TableScales.Columns._ID, mId);
+        values.put(DatabaseHelper.TableScales.Columns._ID, getId());
         values.put(DatabaseHelper.TableScales.Columns.NAME, mName);
         values.put(DatabaseHelper.TableScales.Columns.TYPE, mType);
         values.put(DatabaseHelper.TableScales.Columns.CLASS_STATIC, mClassStatic);
@@ -217,7 +206,7 @@ public class ScaleRecord implements BaseRecord, Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeLong(mId);
+        dest.writeLong(getId());
         dest.writeString(mName);
         dest.writeString(mType);
         dest.writeInt(mClassStatic);

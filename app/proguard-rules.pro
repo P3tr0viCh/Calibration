@@ -1,17 +1,43 @@
-# Add project specific ProGuard rules here.
-# By default, the flags in this file are appended to flags specified
-# in C:\Android\sdk/tools/proguard/proguard-android.txt
-# You can edit the include path and order by changing the proguardFiles
-# directive in build.gradle.
-#
-# For more details, see
-#   http://developer.android.com/guide/developing/tools/proguard.html
+-dontnote com.google.vending.licensing.ILicensingService
+-dontnote com.android.vending.licensing.ILicensingService
 
-# Add any project specific keep options here:
+-dontnote android.net.http.**
+-dontnote org.apache.http.**
+-dontnote org.apache.commons.codec.**
 
-# If your project uses WebView with JS, uncomment the following
-# and specify the fully qualified class name to the JavaScript interface
-# class:
-#-keepclassmembers class fqcn.of.javascript.interface.for.webview {
-#   public *;
-#}
+-keepclassmembers class android.support.v7.widget.ListPopupWindow {
+    public void setVerticalOffset(int);
+    public void show();
+}
+
+-keepclassmembers class android.support.v7.view.menu.MenuPopupHelper {
+    private android.support.v7.widget.ListPopupWindow mPopup;
+    public void setForceShowIcon(boolean);
+}
+
+-keepclassmembers class android.support.v7.widget.PopupMenu {
+    private android.support.v7.view.menu.MenuPopupHelper mPopup;
+}
+
+-dontnote android.support.v4.app.**
+-dontnote android.support.v4.view.**
+-dontnote android.support.v4.text.**
+-dontnote android.support.v4.widget.**
+-dontnote android.support.v7.view.**
+-dontnote android.support.v7.widget.**
+-dontnote android.support.design.widget.**
+
+-dontnote com.wdullaer.materialdatetimepicker.**
+
+-keep class com.github.mikephil.charting.animation.ChartAnimator { *; }
+
+-dontnote com.github.mikephil.charting.charts.**
+-dontnote com.github.mikephil.charting.animation.**
+
+-keep class com.yandex.disk.rest.** { *; }
+
+-keepattributes Signature
+-keepattributes Exceptions
+-keepattributes InnerClasses
+-keepattributes EnclosingMethod
+-keepattributes *Annotation*

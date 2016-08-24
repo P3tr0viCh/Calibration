@@ -4,15 +4,32 @@ import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 
-public interface BaseRecord {
-    long getId();
+public abstract class BaseRecord implements DatabaseRecord {
+
+    /**
+     * Ключевое поле.
+     */
+    private long mId;
+
+    public long getId() {
+        return mId;
+    }
+
+    public void setId(long id) {
+        mId = id;
+    }
 
     @NonNull
-    Bundle putToBundle(@NonNull Bundle bundle);
+    public abstract Bundle putToBundle(@NonNull Bundle bundle);
 
     @NonNull
-    Bundle putToBundle();
+    public abstract Bundle putToBundle();
 
     @NonNull
-    ContentValues getContentValues();
+    public abstract ContentValues getContentValues();
+
+    @Override
+    public String toString() {
+        return getContentValues().toString();
+    }
 }

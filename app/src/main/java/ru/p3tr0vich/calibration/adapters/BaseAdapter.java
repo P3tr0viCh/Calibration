@@ -1,6 +1,7 @@
 package ru.p3tr0vich.calibration.adapters;
 
-import android.support.annotation.IntDef;
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -27,74 +28,50 @@ public abstract class BaseAdapter<T extends BaseRecord> extends RecyclerView.Ada
 
     private final List<T> mRecords;
 
-    private final View.OnClickListener mOnClickListener;
+    @LayoutRes
+    private int mHeaderLayout;
+    @LayoutRes
+    private int mFooterLayout;
 
-    @HeaderFooter
-    private int mShowHeader;
-    @HeaderFooter
-    private int mShowFooter;
-
-    @IntDef({HF_HIDE, HF_SHOW})
-    public @interface HeaderFooter {
-    }
-
-    private static final int HF_HIDE = 0;
-    private static final int HF_SHOW = 1;
-
-    public BaseAdapter(View.OnClickListener onClickListener,
-                       boolean showHeader, boolean showFooter) {
+    public BaseAdapter(@LayoutRes int headerLayout, @LayoutRes int footerLayout) {
         super();
         setHasStableIds(true);
 
-        setShowHeader(showHeader);
-        setShowFooter(showFooter);
+        mHeaderLayout = headerLayout;
+        mFooterLayout = footerLayout;
 
         mRecords = new ArrayList<>();
-        if (isShowHeader()) mRecords.add(null);
-        if (isShowFooter()) mRecords.add(null);
-
-        mOnClickListener = onClickListener;
+        if (hasHeader()) mRecords.add(null);
+        if (hasFooter()) mRecords.add(null);
     }
 
     public int getFooterType() {
         return TYPE_FOOTER;
     }
 
-    public View.OnClickListener getOnClickListener() {
-        return mOnClickListener;
+    public boolean hasHeader() {
+        return mHeaderLayout > 0;
     }
 
-    public boolean isShowHeader() {
-        return mShowHeader == HF_SHOW;
-    }
-
-    private void setShowHeader(boolean showHeader) {
-        mShowHeader = showHeader ? HF_SHOW : HF_HIDE;
-    }
-
-    public boolean isShowFooter() {
-        return mShowFooter == HF_SHOW;
-    }
-
-    private void setShowFooter(boolean showFooter) {
-        mShowFooter = showFooter ? HF_SHOW : HF_HIDE;
+    private boolean hasFooter() {
+        return mFooterLayout > 0;
     }
 
     public void swapRecords(@Nullable List<T> records) {
         mRecords.clear();
 
-        if (isShowHeader()) mRecords.add(null);
+        if (hasHeader()) mRecords.add(null);
 
         if (records != null)
             mRecords.addAll(records);
 
-        if (isShowFooter()) mRecords.add(null);
+        if (hasFooter()) mRecords.add(null);
 
         notifyDataSetChanged();
     }
 
     public int findPositionById(long id) {
-        for (int i = mShowHeader, count = mRecords.size() - mShowFooter; i < count; i++)
+        for (int i = (hasHeader() ? 1 : 0), count = mRecords.size() - (hasFooter() ? 1 : 0); i < count; i++)
             if (mRecords.get(i).getId() == id) return i;
 
         return -1;
@@ -111,27 +88,21 @@ public abstract class BaseAdapter<T extends BaseRecord> extends RecyclerView.Ada
 
     @Override
     public long getItemId(int position) {
-        if (isShowHeader() && position == HEADER_POSITION) return HEADER_ID;
-        if (isShowFooter() && position == mRecords.size() - 1) return FOOTER_ID;
+        if (hasHeader() && position == HEADER_POSITION) return HEADER_ID;
+        if (hasFooter() && position == mRecords.size() - 1) return FOOTER_ID;
 
         return getRecords().get(position).getId();
     }
 
     @Override
     public int getItemViewType(int position) {
-        if (isShowHeader() && position == HEADER_POSITION) return TYPE_HEADER;
-        if (isShowFooter() && position == getRecords().size() - 1) return TYPE_FOOTER;
+        if (hasHeader() && position == HEADER_POSITION) return TYPE_HEADER;
+        if (hasFooter() && position == mRecords.size() - 1) return TYPE_FOOTER;
         return TYPE_ITEM;
     }
 
     @NonNull
-    public abstract RecyclerView.ViewHolder getItemViewHolder(ViewGroup parent);
-
-    @LayoutRes
-    public abstract int getHeaderLayout();
-
-    @LayoutRes
-    public abstract int getFooterLayout();
+    public abstract ItemViewHolder getItemViewHolder(ViewGroup parent);
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -139,19 +110,31 @@ public abstract class BaseAdapter<T extends BaseRecord> extends RecyclerView.Ada
             case TYPE_ITEM:
                 return getItemViewHolder(parent);
             case TYPE_HEADER:
-                return new HeaderViewHolder(
-                        LayoutInflater.from(parent.getContext()).inflate(getHeaderLayout(), parent, false));
+                return new HeaderOrFooterViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(mHeaderLayout, parent, false));
             case TYPE_FOOTER:
-                return new HeaderViewHolder(
-                        LayoutInflater.from(parent.getContext()).inflate(getFooterLayout(), parent, false));
+                return new HeaderOrFooterViewHolder(
+                        LayoutInflater.from(parent.getContext()).inflate(mFooterLayout, parent, false));
             default:
                 throw new IllegalArgumentException("onCreateViewHolder: wrong viewType == " + viewType);
         }
     }
 
-    private static class HeaderViewHolder extends RecyclerView.ViewHolder {
+    public static class ItemViewHolder<T extends ViewDataBinding> extends RecyclerView.ViewHolder {
+        private final T mBinding;
 
-        HeaderViewHolder(View itemView) {
+        public ItemViewHolder(View itemView) {
+            super(itemView);
+            mBinding = DataBindingUtil.bind(itemView);
+        }
+
+        T getBinding() {
+            return mBinding;
+        }
+    }
+
+    private static class HeaderOrFooterViewHolder extends RecyclerView.ViewHolder {
+        HeaderOrFooterViewHolder(View itemView) {
             super(itemView);
         }
     }
