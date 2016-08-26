@@ -5,9 +5,10 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v4.content.LocalBroadcastManager;
 
-abstract class BroadcastReceiverLoading extends BroadcastReceiverLocalBase {
+public abstract class BroadcastReceiverLoading extends BroadcastReceiverLocalBase {
 
     private static final String ACTION = BuildConfig.APPLICATION_ID + ".ACTION_LOADING";
+    private static final String EXTRA_LOADER_ID = BuildConfig.APPLICATION_ID + ".EXTRA_LOADER_ID";
     private static final String EXTRA_LOADING = BuildConfig.APPLICATION_ID + ".EXTRA_LOADING";
 
     @Override
@@ -15,15 +16,16 @@ abstract class BroadcastReceiverLoading extends BroadcastReceiverLocalBase {
         return ACTION;
     }
 
-    public static void send(@NonNull Context context, boolean loading) {
+    public static void send(@NonNull Context context, int loaderId, boolean loading) {
         LocalBroadcastManager.getInstance(context).sendBroadcast(new Intent(ACTION)
+                .putExtra(EXTRA_LOADER_ID, loaderId)
                 .putExtra(EXTRA_LOADING, loading));
     }
 
     @Override
     public final void onReceive(Context context, Intent intent) {
-        onReceive(intent.getBooleanExtra(EXTRA_LOADING, false));
+        onReceive(intent.getIntExtra(EXTRA_LOADER_ID, -1), intent.getBooleanExtra(EXTRA_LOADING, false));
     }
 
-    public abstract void onReceive(boolean loading);
+    public abstract void onReceive(int loaderId, boolean loading);
 }

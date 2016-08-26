@@ -7,6 +7,7 @@ import android.support.annotation.IntDef;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -34,6 +35,8 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
 
     private static final boolean LOG_ENABLED = true;
 
+    private View mLayoutMain;
+
     private RecyclerView mRecyclerView;
 
     private BaseAdapter<T> mRecyclerViewAdapter;
@@ -48,15 +51,6 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     private long mIdForScroll = -1;
 
     private Snackbar mSnackbar = null;
-    private final Snackbar.Callback mSnackBarCallback = new Snackbar.Callback() {
-        @Override
-        public void onDismissed(Snackbar snackbar, int event) {
-            // Workaround for bug
-
-            if (event == DISMISS_EVENT_SWIPE)
-                setFloatingActionButtonVisibleTranslate(true);
-        }
-    };
 
     private static class AnimationDuration {
         final int startDelayFab;
@@ -106,11 +100,11 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
     @NonNull
     public abstract BaseAdapter<T> createRecyclerViewAdapter(boolean isPhone);
 
-    public void onRecyclerViewScrollUp() {
+    private void onRecyclerViewScrollUp() {
         setFloatingActionButtonVisibleTranslate(false);
     }
 
-    public void onRecyclerViewScrollDown() {
+    private void onRecyclerViewScrollDown() {
         setFloatingActionButtonVisibleTranslate(true);
     }
 
@@ -122,7 +116,22 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
 
         View view = inflater.inflate(getFragmentLayout(), container, false);
 
+        mLayoutMain = view.findViewById(R.id.layout_main);
+        if (mLayoutMain == null)
+            throw new NullPointerException("Layout with id layout_main not found");
+
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        assert mRecyclerView != null;
+
+        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        assert mFloatingActionButton != null;
+
+        mProgressWheel = (ProgressWheel) view.findViewById(R.id.progress_wheel);
+        assert mProgressWheel != null;
+
+        mTextNoRecords = (TextView) view.findViewById(R.id.text_no_records);
+        assert mTextNoRecords != null;
+
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -143,7 +152,8 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
 
                 @Override
                 public void onScrollUp() {
-                    onRecyclerViewScrollUp();
+                    if (mSnackbar == null || !mSnackbar.isShown())
+                        onRecyclerViewScrollUp();
                 }
 
                 @Override
@@ -153,13 +163,10 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
                 }
             });
 
-        mProgressWheel = (ProgressWheel) view.findViewById(R.id.progress_wheel);
         mProgressWheel.setVisibility(View.GONE);
 
-        mTextNoRecords = (TextView) view.findViewById(R.id.text_no_records);
         mTextNoRecords.setVisibility(View.GONE);
 
-        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -285,5 +292,13 @@ public abstract class FragmentBaseList<T extends BaseRecord> extends FragmentBas
             scrollToPosition(mRecyclerViewAdapter.findPositionById(mIdForScroll));
             mIdForScroll = -1;
         }
+    }
+
+    public void showSnackbar(@StringRes int textId, @StringRes int actionTextId,
+                             final View.OnClickListener actionClickListener) {
+        mSnackbar = Snackbar
+                .make(mLayoutMain, textId, Snackbar.LENGTH_LONG)
+                .setAction(actionTextId, actionClickListener);
+        mSnackbar.show();
     }
 }

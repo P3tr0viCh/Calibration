@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -14,15 +15,16 @@
             type="ru.p3tr0vich.calibration.models.ScaleRecord"/>
     </data>
 
-    <RelativeLayout xmlns:tools="http://schemas.android.com/tools"
-                    android:layout_width="match_parent"
-                    android:layout_height="72dp"
-                    android:clickable="false"
-                    android:descendantFocusability="blocksDescendants"
-                    android:orientation="horizontal"
-                    android:paddingEnd="16dp"
-                    android:paddingStart="16dp">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="72dp"
+        android:clickable="false"
+        android:descendantFocusability="blocksDescendants"
+        android:orientation="horizontal"
+        android:paddingEnd="16dp"
+        android:paddingStart="16dp">
 
+        <!-- deprecated singleLine -->
         <TextView
             android:id="@+id/text_name_and_id"
             android:layout_width="match_parent"
@@ -30,10 +32,13 @@
             android:layout_alignParentStart="true"
             android:layout_alignParentTop="true"
             android:layout_toStartOf="@+id/btn_menu"
-            android:clickable="false"
+            android:ellipsize="middle"
             android:gravity="bottom"
+            android:maxLines="1"
+            android:singleLine="true"
             android:text="@{UtilsRecordFormat.getScaleNameAndId(context, scaleRecord)}"
             android:textAppearance="@style/AppTheme.TextAppearance.List"
+            tools:ignore="Deprecated"
             tools:text="@string/header_scale_name_and_id"/>
 
         <LinearLayout
@@ -51,7 +56,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
+                android:ellipsize="end"
                 android:gravity="top"
+                android:maxLines="1"
                 android:text="@{UtilsRecordFormat.getScaleType(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
                 tools:text="@string/header_scale_type"/>
@@ -61,9 +68,13 @@
                 android:layout_width="100dp"
                 android:layout_height="match_parent"
                 android:layout_weight="0"
+                android:ellipsize="middle"
                 android:gravity="top"
+                android:maxLines="1"
+                android:singleLine="true"
                 android:text="@{UtilsRecordFormat.getScaleClass(context, scaleRecord)}"
                 android:textAppearance="@style/AppTheme.TextAppearance.List"
+                tools:ignore="Deprecated"
                 tools:text="@string/header_scale_class"/>
         </LinearLayout>
 

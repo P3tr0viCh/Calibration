@@ -1,19 +1,19 @@
 package ru.p3tr0vich.calibration;
 
 import android.content.ContentUris;
-import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.view.MenuItem;
+import android.view.View;
 
 import ru.p3tr0vich.calibration.adapters.BaseAdapter;
 import ru.p3tr0vich.calibration.adapters.ScalesAdapter;
+import ru.p3tr0vich.calibration.factories.CursorLoaderFactory;
 import ru.p3tr0vich.calibration.helpers.ContentProviderHelper;
 import ru.p3tr0vich.calibration.helpers.DatabaseHelper;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
@@ -32,9 +32,13 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
 
     private static final boolean LOG_ENABLED = true;
 
-    private static final int SCALES_CURSOR_LOADER_ID = 0;
+    private static final int CURSOR_LOADER_ID = CursorLoaderFactory.Ids.SCALES;
 
-    DatabaseObserverScales mDatabaseObserverScales;
+    private BroadcastReceiverLoading mBroadcastReceiverLoading;
+
+    private DatabaseObserver mDatabaseObserver;
+
+    private ScaleRecord mDeletedRecord;
 
     @Override
     public int getTitleId() {
@@ -68,6 +72,14 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         }
     }
 
+    private final View.OnClickListener mUndoClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            ContentProviderHelper.insertRecord(getContext(), mDeletedRecord);
+            mDeletedRecord = null;
+        }
+    };
+
     @Override
     public boolean onMenuItemClick(MenuItem item, @Nullable ScaleRecord record) {
         if (record == null) return false;
@@ -78,18 +90,12 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
 
                 return true;
             case R.id.action_fueling_delete:
-                deleteRecord(record);
+                mDeletedRecord = record;
 
-//                mDeletedFuelingRecord = fuelingRecord;
-//
-//                if (markRecordAsDeleted(fuelingRecord)) {
-//                    mSnackbar = Snackbar
-//                            .make(mLayoutMain, R.string.message_record_deleted,
-//                                    Snackbar.LENGTH_LONG)
-//                            .setAction(R.string.dialog_btn_cancel, mUndoClickListener)
-//                            .setCallback(mSnackBarCallback);
-//                    mSnackbar.show();
-//                }
+                if (deleteRecord(record)) {
+                    showSnackbar(R.string.message_record_deleted, R.string.dialog_btn_cancel,
+                            mUndoClickListener);
+                }
 
                 return true;
             default:
@@ -104,27 +110,58 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         if (LOG_ENABLED) UtilsLog.d(TAG, "onActivityCreated", "savedInstanceState " +
                 (savedInstanceState == null ? "=" : "!") + "= null");
 
-        getLoaderManager().initLoader(SCALES_CURSOR_LOADER_ID, null, this);
+        getLoaderManager().initLoader(CURSOR_LOADER_ID, null, this);
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mDatabaseObserverScales = new DatabaseObserverScales();
-        mDatabaseObserverScales.register(getContext());
+
+        mBroadcastReceiverLoading = new BroadcastReceiverLoading() {
+            @Override
+            public void onReceive(int loaderId, boolean loading) {
+                if (loaderId == CURSOR_LOADER_ID) setLoading(loading);
+            }
+        };
+
+        mDatabaseObserver = new DatabaseObserver() {
+            @Override
+            public void onChange(@NonNull Uri uri, int uriMatch) {
+                if (LOG_ENABLED)
+                    UtilsLog.d(TAG, "DatabaseObserver onChange", "uriMatch == " + uriMatch);
+
+                switch (uriMatch) {
+                    case DATABASE_SCALES_ITEM:
+                        updateList(ContentUris.parseId(uri));
+                }
+            }
+        };
+        mDatabaseObserver.register(getContext());
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        mBroadcastReceiverLoading.register(getContext());
+    }
+
+    @Override
+    public void onPause() {
+        mBroadcastReceiverLoading.unregister(getContext());
+        super.onPause();
     }
 
     @Override
     public void onDestroy() {
-        mDatabaseObserverScales.unregister(getContext());
+        mDatabaseObserver.unregister(getContext());
         super.onDestroy();
     }
 
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (id) {
-            case SCALES_CURSOR_LOADER_ID:
-                return new ScalesCursorLoader(getContext());
+            case CURSOR_LOADER_ID:
+                return CursorLoaderFactory.getCursorLoader(getContext(), CURSOR_LOADER_ID);
             default:
                 return null;
         }
@@ -136,7 +173,7 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         if (LOG_ENABLED) UtilsLog.d(TAG, "onLoadFinished");
 
         switch (loader.getId()) {
-            case SCALES_CURSOR_LOADER_ID:
+            case CURSOR_LOADER_ID:
                 swapRecords(DatabaseHelper.getScaleRecords(data));
         }
     }
@@ -146,7 +183,7 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
         if (LOG_ENABLED) UtilsLog.d(TAG, "onLoaderReset");
 
         switch (loader.getId()) {
-            case SCALES_CURSOR_LOADER_ID:
+            case CURSOR_LOADER_ID:
                 swapRecords(null);
         }
     }
@@ -154,41 +191,7 @@ public class FragmentScales extends FragmentBaseList<ScaleRecord> implements
     private void updateList(long id) {
         if (id != -1) {
             setIdForScroll(id);
-            getLoaderManager().getLoader(SCALES_CURSOR_LOADER_ID).forceLoad();
-        }
-    }
-
-    private static class ScalesCursorLoader extends CursorLoader {
-
-        ScalesCursorLoader(Context context) {
-            super(context);
-        }
-
-        @Override
-        public Cursor loadInBackground() {
-            if (LOG_ENABLED) UtilsLog.d(TAG, "ScalesCursorLoader", "loadInBackground");
-
-            BroadcastReceiverLoading.send(getContext(), true);
-
-            try {
-                return ContentProviderHelper.getScales(getContext());
-            } finally {
-                BroadcastReceiverLoading.send(getContext(), false);
-            }
-        }
-    }
-
-    private class DatabaseObserverScales extends DatabaseObserver {
-
-        @Override
-        public void onChange(@NonNull Uri uri, int uriMatch) {
-            if (LOG_ENABLED)
-                UtilsLog.d(TAG, "DatabaseObserverScales onChange", "uriMatch == " + uriMatch);
-
-            switch (uriMatch) {
-                case DATABASE_SCALES_ITEM:
-                    updateList(ContentUris.parseId(uri));
-            }
+            getLoaderManager().getLoader(CURSOR_LOADER_ID).forceLoad();
         }
     }
 }

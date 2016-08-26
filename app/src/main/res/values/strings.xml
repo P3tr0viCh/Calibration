@@ -27,6 +27,8 @@
     <string name="action_update">Изменить</string>
     <string name="action_delete">Удалить</string>
 
+    <string name="dialog_btn_cancel">ОТМЕНА</string>
+
     <string name="header_scale_name_and_id">Название (номер)</string>
     <string name="header_scale_type">Тип</string>
     <string name="header_scale_class">Класс точности</string>
@@ -78,6 +80,8 @@
     <string name="message_error_insert_record">Во время добавления записи произошла ошибка</string>
     <string name="message_error_update_record">Во время обновления записи произошла ошибка</string>
     <string name="message_error_delete_record">Во время удаления записи произошла ошибка</string>
+
+    <string name="message_record_deleted">Запись удалена</string>
 
     <string name="sync_authority" translatable="false">ru.p3tr0vich.calibration.provider</string>
 </resources>

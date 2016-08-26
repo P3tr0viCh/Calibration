@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 import ru.p3tr0vich.calibration.models.DatabaseModel;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
@@ -25,6 +26,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
 
     private static final boolean LOG_ENABLED = false;
 
+    private static final boolean QUERY_WAIT_ENABLED = false;
 
 //    public static class Filter {
 //
@@ -153,14 +155,15 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
                     ", selection == " + selection + ", groupBy == " + groupBy +
                     ", orderBy == " + orderBy + ", limit == " + limit);
 
-//        for (int i = 0, waitSeconds = 3; i < waitSeconds; i++) {
-//            try {
-//                TimeUnit.SECONDS.sleep(1);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            UtilsLog.d(TAG, "query", "wait... " + (waitSeconds - i));
-//        }
+        if (QUERY_WAIT_ENABLED)
+            for (int i = 0, waitSeconds = 3; i < waitSeconds; i++) {
+                try {
+                    TimeUnit.SECONDS.sleep(1);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                UtilsLog.d(TAG, "query", "wait... " + (waitSeconds - i));
+            }
 
         return getReadableDatabase().query(table, columns, selection,
                 null, groupBy, null, orderBy, limit);
@@ -178,7 +181,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
         return insert(getWritableDatabase(), table, values);
     }
 
-    public int update(@NonNull SQLiteDatabase db, @NonNull String table, @NonNull ContentValues values, @NonNull String whereClause) {
+    private int update(@NonNull SQLiteDatabase db, @NonNull String table, @NonNull ContentValues values, @NonNull String whereClause) {
         return db.update(table, values, whereClause, null);
     }
 

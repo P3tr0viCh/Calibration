@@ -246,11 +246,6 @@ public class ContentProviderHelper extends ContentProvider {
 //                filter.getSelection(), null, null, null);
 //    }
 
-    public static Cursor getScales(@NonNull Context context) {
-        return context.getContentResolver().query(URI_DATABASE_SCALES, null,
-                null, null, null, null);
-    }
-
     @Nullable
     public static ScaleRecord getScaleRecord(@NonNull Context context, long id) {
         final Cursor cursor = context.getContentResolver().query(
