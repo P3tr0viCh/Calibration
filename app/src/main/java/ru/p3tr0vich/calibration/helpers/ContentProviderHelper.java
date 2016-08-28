@@ -247,14 +247,14 @@ public class ContentProviderHelper extends ContentProvider {
 //    }
 
     @Nullable
-    public static ScaleRecord getScaleRecord(@NonNull Context context, long id) {
+    public static ScaleRecord getScale(@NonNull Context context, long id) {
         final Cursor cursor = context.getContentResolver().query(
                 ContentUris.withAppendedId(URI_DATABASE_SCALES, id), null, null, null, null, null);
 
         if (cursor != null)
             try {
                 if (cursor.moveToFirst())
-                    return DatabaseHelper.getScaleRecord(cursor);
+                    return new ScaleRecord(cursor);
             } finally {
                 cursor.close();
             }

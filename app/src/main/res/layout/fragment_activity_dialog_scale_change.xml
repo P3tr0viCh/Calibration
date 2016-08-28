@@ -19,7 +19,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/text_scale_name"
-                android:imeOptions="actionNone|flagNoExtractUi"
+                android:imeOptions="actionNext|flagNoExtractUi"
                 android:inputType="textCapSentences"
                 android:textAppearance="@style/AppTheme.TextAppearance.Text"/>
         </android.support.design.widget.TextInputLayout>
@@ -33,7 +33,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/text_scale_id"
-                android:imeOptions="actionNone|flagNoExtractUi"
+                android:imeOptions="actionNext|flagNoExtractUi"
                 android:inputType="numberDecimal"
                 android:textAppearance="@style/AppTheme.TextAppearance.Text"/>
         </android.support.design.widget.TextInputLayout>
@@ -47,7 +47,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/text_scale_type"
-                android:imeOptions="actionNone|flagNoExtractUi"
+                android:imeOptions="actionDone|flagNoExtractUi"
                 android:inputType="textCapSentences|textNoSuggestions"
                 android:textAppearance="@style/AppTheme.TextAppearance.Text"/>
         </android.support.design.widget.TextInputLayout>
@@ -75,6 +75,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:labelFor="@+id/spinner_class_static"
                     android:text="@string/text_scale_class_static"
                     android:textAppearance="@style/AppTheme.TextAppearance.Small.Secondary"/>
 
@@ -93,6 +94,7 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:labelFor="@+id/spinner_class_dynamic"
                     android:text="@string/text_scale_class_dynamic"
                     android:textAppearance="@style/AppTheme.TextAppearance.Small.Secondary"/>
 

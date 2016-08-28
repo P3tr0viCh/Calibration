@@ -11,10 +11,16 @@ import ru.p3tr0vich.calibration.models.ScaleRecord;
 public class UtilsRecordFormat {
 
     @NonNull
-    public static String getScaleNameAndId(Context context, ScaleRecord record) {
+    public static String getScaleName(Context context, ScaleRecord record) {
         String name = record.getName();
         if (TextUtils.isEmpty(name)) name = context.getString(R.string.item_scale_name_empty);
-        return context.getString(R.string.item_scale_name, name, record.getId());
+        return name;
+    }
+
+    @NonNull
+    public static String getScaleNameAndId(Context context, ScaleRecord record) {
+        String name = getScaleName(context, record);
+        return context.getString(R.string.item_scale_name_and_id, name, record.getId());
     }
 
     @NonNull

@@ -1,6 +1,7 @@
 package ru.p3tr0vich.calibration.models;
 
 import android.content.ContentValues;
+import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -138,6 +139,16 @@ public class ScaleRecord extends BaseRecord implements Parcelable {
         this((ScaleRecord) bundle.getParcelable(NAME));
     }
 
+    public ScaleRecord(@NonNull Cursor cursor) {
+        //noinspection WrongConstant
+        this(
+                cursor.getLong(DatabaseModel.TableScales.Columns._ID_INDEX),
+                cursor.getString(DatabaseModel.TableScales.Columns.NAME_INDEX),
+                cursor.getString(DatabaseModel.TableScales.Columns.TYPE_INDEX),
+                cursor.getInt(DatabaseModel.TableScales.Columns.CLASS_STATIC_INDEX),
+                cursor.getInt(DatabaseModel.TableScales.Columns.CLASS_DYNAMIC_INDEX));
+    }
+
     @Nullable
     public String getType() {
         return mType;
@@ -191,10 +202,10 @@ public class ScaleRecord extends BaseRecord implements Parcelable {
         ContentValues values = new ContentValues();
 
         values.put(DatabaseHelper.TableScales.Columns._ID, getId());
-        values.put(DatabaseHelper.TableScales.Columns.NAME, mName);
-        values.put(DatabaseHelper.TableScales.Columns.TYPE, mType);
-        values.put(DatabaseHelper.TableScales.Columns.CLASS_STATIC, mClassStatic);
-        values.put(DatabaseHelper.TableScales.Columns.CLASS_DYNAMIC, mClassDynamic);
+        values.put(DatabaseHelper.TableScales.Columns.NAME, getName());
+        values.put(DatabaseHelper.TableScales.Columns.TYPE, getType());
+        values.put(DatabaseHelper.TableScales.Columns.CLASS_STATIC, getClassStatic());
+        values.put(DatabaseHelper.TableScales.Columns.CLASS_DYNAMIC, getClassDynamic());
 
         return values;
     }
@@ -207,10 +218,10 @@ public class ScaleRecord extends BaseRecord implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeLong(getId());
-        dest.writeString(mName);
-        dest.writeString(mType);
-        dest.writeInt(mClassStatic);
-        dest.writeInt(mClassDynamic);
+        dest.writeString(getName());
+        dest.writeString(getType());
+        dest.writeInt(getClassStatic());
+        dest.writeInt(getClassDynamic());
     }
 
     private ScaleRecord(Parcel in) {

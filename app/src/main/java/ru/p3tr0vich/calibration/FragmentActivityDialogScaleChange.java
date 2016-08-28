@@ -1,7 +1,9 @@
 package ru.p3tr0vich.calibration;
 
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import ru.p3tr0vich.calibration.helpers.ContentProviderHelper;
 import ru.p3tr0vich.calibration.models.ScaleRecord;
 import ru.p3tr0vich.calibration.utils.Utils;
 import ru.p3tr0vich.calibration.utils.UtilsFormat;
+import ru.p3tr0vich.calibration.utils.UtilsRecordFormat;
 
 public class FragmentActivityDialogScaleChange extends FragmentBase
         implements ActivityDialog.ActivityDialogFragment {
@@ -101,6 +104,11 @@ public class FragmentActivityDialogScaleChange extends FragmentBase
             mRecordId = savedInstanceState.getLong(KEY_RECORD_ID);
         }
 
+        if (!isNewRecord()) {
+            mEditId.setEnabled(false);
+            mEditName.setNextFocusForwardId(R.id.edit_type);
+        }
+
         return view;
     }
 
@@ -178,22 +186,56 @@ public class FragmentActivityDialogScaleChange extends FragmentBase
     }
 
     /**
+     * @return Истина, если диалог открыт в режиме добавления новой записи,
+     * ложь, если в режиме редактирования существующей.
+     */
+    private boolean isNewRecord() {
+        return mRecordId == 0;
+    }
+
+    /**
+     * Переводит фокус в окно ввода, содержащее неправильное значение, и выводит сообщение.
+     *
+     * @param editText окно ввода.
+     * @param text     текст.
+     */
+    private void setFocusAndShowToast(@NonNull EditText editText, @NonNull String text) {
+        editText.requestFocus();
+        Utils.toast(text);
+    }
+
+    private void setFocusAndShowToast(@NonNull EditText editText, @StringRes int textId, Object... formatArgs) {
+        setFocusAndShowToast(editText, getString(textId, formatArgs));
+    }
+
+    private void setFocusAndShowToast(@NonNull EditText editText, @StringRes int textId) {
+        setFocusAndShowToast(editText, getString(textId));
+    }
+
+    /**
      * Проверяет введённые данные перед сохранением.
      *
      * @return Истина, если данные валидны, ложь, если нет (например, существует запись с введённым айди).
      */
     private boolean checkRecord() {
         if (TextUtils.isEmpty(mEditId.getText())) {
-            mEditId.requestFocus();
-            Utils.toast(R.string.message_error_need_id);
+            setFocusAndShowToast(mEditId, R.string.message_error_need_id);
             return false;
         }
 
         long id = UtilsFormat.editTextToLong(mEditId);
         if (id <= 0) {
-            mEditId.requestFocus();
-            Utils.toast(R.string.message_error_bad_id);
+            setFocusAndShowToast(mEditId, R.string.message_error_bad_id);
             return false;
+        }
+
+        if (isNewRecord()) {
+            ScaleRecord record = ContentProviderHelper.getScale(getContext(), id);
+            if (record != null) {
+                setFocusAndShowToast(mEditId, R.string.message_error_exists_id,
+                        record.getId(), UtilsRecordFormat.getScaleName(getContext(), record));
+                return false;
+            }
         }
 
         return true;
@@ -214,15 +256,15 @@ public class FragmentActivityDialogScaleChange extends FragmentBase
                 getSelectedClassStatic(),
                 getSelectedClassDynamic());
 
-        if (mRecordId != 0) {
-            if (!ContentProviderHelper.updateRecord(getContext(), record)) {
-                Utils.toast(R.string.message_error_update_record);
+        if (isNewRecord()) {
+            if (!ContentProviderHelper.insertRecord(getContext(), record)) {
+                Utils.toast(R.string.message_error_insert_record);
 
                 return false;
             }
         } else {
-            if (!ContentProviderHelper.insertRecord(getContext(), record)) {
-                Utils.toast(R.string.message_error_insert_record);
+            if (!ContentProviderHelper.updateRecord(getContext(), record)) {
+                Utils.toast(R.string.message_error_update_record);
 
                 return false;
             }

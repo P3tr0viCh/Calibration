@@ -115,17 +115,6 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
             UtilsLog.d(TAG, "onUpgrade");
     }
 
-    @NonNull
-    public static ScaleRecord getScaleRecord(@NonNull Cursor cursor) {
-        //noinspection WrongConstant
-        return new ScaleRecord(
-                cursor.getLong(TableScales.Columns._ID_INDEX),
-                cursor.getString(TableScales.Columns.NAME_INDEX),
-                cursor.getString(TableScales.Columns.TYPE_INDEX),
-                cursor.getInt(TableScales.Columns.CLASS_STATIC_INDEX),
-                cursor.getInt(TableScales.Columns.CLASS_DYNAMIC_INDEX));
-    }
-
     @Nullable
     public static List<ScaleRecord> getScaleRecords(@Nullable Cursor cursor) {
         if (cursor == null) return null;
@@ -134,7 +123,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
 
         if (cursor.moveToFirst())
             do
-                records.add(getScaleRecord(cursor));
+                records.add(new ScaleRecord(cursor));
             while (cursor.moveToNext());
 
         return records;

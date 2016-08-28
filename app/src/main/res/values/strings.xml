@@ -40,7 +40,7 @@
     <string name="text_scale_class_static">в статике</string>
     <string name="text_scale_class_dynamic">в динамике</string>
 
-    <string name="item_scale_name">%1$s (%2$d)</string>
+    <string name="item_scale_name_and_id">%1$s (%2$d)</string>
     <string name="item_scale_name_empty">Без названия</string>
     <string name="item_scale_class">%1$s/%2$s</string>
 
@@ -76,6 +76,7 @@
 
     <string name="message_error_need_id">Необходимо указать номер весов</string>
     <string name="message_error_bad_id">Номер весов должен быть больше нуля</string>
+    <string name="message_error_exists_id">Весы с номером %1$d (%2$s) уже существуют в базе данных</string>
 
     <string name="message_error_insert_record">Во время добавления записи произошла ошибка</string>
     <string name="message_error_update_record">Во время обновления записи произошла ошибка</string>
