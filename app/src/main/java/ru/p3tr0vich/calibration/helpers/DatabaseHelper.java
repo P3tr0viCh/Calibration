@@ -12,6 +12,7 @@ import android.support.annotation.Nullable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
 import ru.p3tr0vich.calibration.models.DatabaseModel;
@@ -24,7 +25,7 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
 
     private static final String TAG = "DatabaseHelper";
 
-    private static final boolean LOG_ENABLED = false;
+    private static final boolean LOG_ENABLED = true;
 
     private static final boolean QUERY_WAIT_ENABLED = false;
 
@@ -97,22 +98,41 @@ public class DatabaseHelper extends SQLiteOpenHelper implements DatabaseModel {
         super(context, Database.NAME, null, Database.VERSION);
     }
 
-    @SuppressWarnings("SameParameterValue")
-    public static boolean getBoolean(@NonNull Cursor cursor, int columnIndex) {
-        return cursor.getInt(columnIndex) == Statement.TRUE;
-    }
+//    @SuppressWarnings("SameParameterValue")
+//    public static boolean getBoolean(@NonNull Cursor cursor, int columnIndex) {
+//        return cursor.getInt(columnIndex) == Statement.TRUE;
+//    }
 
+    @SuppressWarnings("WrongConstant")
     @Override
     public void onCreate(SQLiteDatabase db) {
         if (LOG_ENABLED)
             UtilsLog.d(TAG, "onCreate", "sql == " + Database.CREATE_STATEMENT);
         db.execSQL(Database.CREATE_STATEMENT);
+
+        // TODO: remove
+        Random random = new Random();
+
+        ScaleRecord scaleRecord = new ScaleRecord();
+        for (int i = 0; i < 10; i++) {
+            scaleRecord.setId(100 + i);
+            scaleRecord.setName("Scale-" + String.valueOf(random.nextInt(10000)));
+            scaleRecord.setType("TYPE-" + String.valueOf(random.nextInt(10000)));
+            scaleRecord.setClassStatic(random.nextInt(4));
+            scaleRecord.setClassDynamic(random.nextInt(4));
+
+            insert(db, TableScales.NAME, scaleRecord.getContentValues());
+        }
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         if (LOG_ENABLED)
             UtilsLog.d(TAG, "onUpgrade");
+
+        db.execSQL("DROP TABLE " + TableScales.NAME);
+
+        onCreate(db);
     }
 
     @Nullable

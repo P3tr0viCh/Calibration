@@ -23,7 +23,9 @@ public abstract class BaseRecord implements DatabaseRecord {
     public abstract Bundle putToBundle(@NonNull Bundle bundle);
 
     @NonNull
-    public abstract Bundle putToBundle();
+    public Bundle putToBundle() {
+        return putToBundle(new Bundle());
+    }
 
     @NonNull
     public abstract ContentValues getContentValues();

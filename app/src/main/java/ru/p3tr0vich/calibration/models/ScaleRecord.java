@@ -16,7 +16,7 @@ import ru.p3tr0vich.calibration.helpers.DatabaseHelper;
 
 public class ScaleRecord extends BaseRecord implements Parcelable {
 
-    public static final String NAME = "SCALE_RECORD";
+    public static final String NAME = ScaleRecord.class.getName();
 
     /**
      * Название весовой.
@@ -186,14 +186,10 @@ public class ScaleRecord extends BaseRecord implements Parcelable {
     }
 
     @NonNull
+    @Override
     public Bundle putToBundle(@NonNull Bundle bundle) {
         bundle.putParcelable(NAME, this);
         return bundle;
-    }
-
-    @NonNull
-    public Bundle putToBundle() {
-        return putToBundle(new Bundle());
     }
 
     @NonNull
